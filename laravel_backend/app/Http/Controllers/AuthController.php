@@ -1,0 +1,60 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\UserTb;
+use Illuminate\Support\Facades\Hash;
+
+class AuthController extends Controller
+{
+    public function register(Request $request){
+        $field = $request->validate([
+            "name"=> "required|string|unique:userstb,name|max:255",
+            "email"=>"required|unique:userstb,email|max:255",
+            "password"=>"required|confirmed|max:255",
+            'phone' => "min:10|nullable" 
+        ]);
+
+        $checkUser = UserTb::where('email' , $field['email'])->first();
+        if($checkUser){
+            return ['register_err'=>'Email already existed'];
+        }
+        $field['password'] = bcrypt($field['password']);
+        $newUser = UserTb::create([...$field, 'role_id' => 2]);
+        $userToken = $newUser->createToken($request->name)->plainTextToken;
+        return ['user' => $newUser, 'token' => $userToken];
+    }
+
+    public function login(Request $request){
+        $userLogin = $request->validate([
+            'name'=>"required|max:255|exists:userstb,name",
+            'password'=>"required"
+        ]);
+
+        $findUser = UserTb::where('name', $userLogin["name"])->first();
+        if (!$findUser){
+            return [
+                "user_err"=> "Fail to find User"
+            ];
+        }
+
+        if (!Hash::check($userLogin['password'], $findUser->password)){
+            return [
+                "password_err"=> "Wrong Password"
+            ];
+        }
+
+        $makeToken = $findUser->createToken($findUser->name)->plainTextToken;
+        return ['name'=>$findUser,
+                'token'=>$makeToken];
+    }
+
+    public function logout(Request $request){
+        $request->user()->tokens()->delete();
+        return [
+            "logout"=>"successfull"
+        ];
+    }
+
+}
