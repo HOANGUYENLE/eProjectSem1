@@ -1,5 +1,5 @@
-create database legalEase;
-use LegalEase;
+create database legal;
+use legal;
 
 create table roles(
 	id				INT AUTO_INCREMENT,
@@ -21,23 +21,11 @@ create table usersTb(
 	CONSTRAINT fk_roleid	FOREIGN KEY (role_id) REFERENCES roles(id)
 )ENGINE=InnoDB;
 
-CREATE TABLE lawyersFiles (
-    lawyer_id INT NOT NULL PRIMARY KEY,
-	address		varchar(200) NOT NULL,
-	yearExp		INT,
-    cardNumber VARCHAR(20) NOT NULL,
-    city        INT, 
-    licenseNumber VARCHAR(50) NOT NULL,    
-    documentImage VARCHAR(255) NOT NULL,
-    status ENUM('pending', 'approve', 'reject') NOT NULL,
-    CONSTRAINT fk_lawyer_verification FOREIGN KEY (lawyer_id) REFERENCES usersTb(id) ON DELETE CASCADE
-    CONSTRAINT fk_lawyer_city FOREIGN KEY (city) REFERENCES cities(id)
-)ENGINE=InnoDB;
 
 CREATE TABLE cities(
-    id INT AUTO_INCREMENT,
-    cityName varchar(255) NOT NULL,
-)
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cityName varchar(255) NOT NULL
+)ENGINE=InnoDB;
 
 INSERT INTO cities (cityName) VALUES
 ('New York'),
@@ -72,6 +60,20 @@ INSERT INTO cities (cityName) VALUES
 ('Baltimore');
 
 
+CREATE TABLE lawyersFiles (
+    lawyer_id INT NOT NULL PRIMARY KEY,
+	address		varchar(200) NOT NULL,
+	yearExp		INT,
+    cardNumber VARCHAR(20) NOT NULL,
+    city        INT, 
+    licenseNumber VARCHAR(50) NOT NULL,    
+    documentImage VARCHAR(255) NOT NULL,
+    status ENUM('pending', 'approve', 'reject') NOT NULL,
+    CONSTRAINT fk_lawyer_verification FOREIGN KEY (lawyer_id) REFERENCES usersTb(id) ON DELETE CASCADE,
+    CONSTRAINT fk_lawyer_city FOREIGN KEY (city) REFERENCES cities(id)
+)ENGINE=InnoDB;
+
+
  CREATE TABLE reviews (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,        
@@ -83,19 +85,6 @@ INSERT INTO cities (cityName) VALUES
     CONSTRAINT fk_review_user FOREIGN KEY (user_id) REFERENCES usersTb(id) ON DELETE CASCADE,
     CONSTRAINT fk_review_lawyer FOREIGN KEY (lawyer_id) REFERENCES lawyersFiles(lawyer_id) ON DELETE CASCADE
 )ENGINE=InnoDB;
-
-CREATE TABLE personal_access_tokens (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    tokenable_type VARCHAR(255) NOT NULL, 
-    tokenable_id BIGINT UNSIGNED NOT NULL, 
-    name VARCHAR(255) NOT NULL,            
-    token VARCHAR(64) NOT NULL UNIQUE,        
-    abilities TEXT NULL,                    
-    last_used_at TIMESTAMP NULL,            
-    expires_at TIMESTAMP NULL,              
-    created_at TIMESTAMP NULL DEFAULT NULL, 
-    updated_at TIMESTAMP NULL DEFAULT NULL  
-);
 
 CREATE TABLE specializations (
     id INT AUTO_INCREMENT PRIMARY KEY,
