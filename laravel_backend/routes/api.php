@@ -37,8 +37,10 @@ Route::middleware(['auth:sanctum', 'roles:1,3'])->group(function(){
     Route::put('/faq/{id}', [FaqController::class, 'update']);
 });
 Route::middleware(['auth:sanctum', 'roles:1'])->group(function(){
+    Route::put('/lawyer/{lawyerID}/reviews/{reviewID}', [ReviewController::class, 'update']);    
     Route::delete('/faq/{id}', [FaqController::class, 'destroy']);
-    Route::put('/lawyer/{lawyerID}/reviews/{reviewID}', [ReviewController::class, 'update']);
+    Route::delete('/lawyer/{lawyerID}/reviews/{reviewID}', [ReviewController::class, 'destroy']);
+    
 });
 
 

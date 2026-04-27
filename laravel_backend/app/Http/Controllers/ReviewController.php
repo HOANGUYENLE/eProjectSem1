@@ -9,7 +9,6 @@ use App\Models\Review;
 
 class ReviewController extends Controller
 {
-
     /**
      * Store a newly created resource in storage.
      */
@@ -69,8 +68,11 @@ class ReviewController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $lawyerId, string $reviewId)
     {
-        //
+        $lawyer = LawyerFiles::with("reviews")->find($lawyerId);
+        $review = $lawyer->reviews->where('id', $reviewId)->first();
+        $review->delete();
+        return response()->json(["success"=>"deleted successfully"], 200);
     }
 }

@@ -1,0 +1,4 @@
+1. Script table LegalEase_Group02_ScripTable.sql import nó vào mysql trong xampp trước và setting .env file trong laravel
+2. Từ trong thư mục laravel_backend mở bằng visual code bật terminal 
+chạy >> php artisan migrate
+3. có thể test và code tiếp rồi 
