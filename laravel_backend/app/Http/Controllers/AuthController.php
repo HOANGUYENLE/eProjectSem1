@@ -10,10 +10,10 @@ class AuthController extends Controller
 {
     public function register(Request $request){
         $field = $request->validate([
-            "name"=> "required|string|unique:userstb,name|max:255",
-            "email"=>"required|unique:userstb,email|max:255",
+            "name"=> "required|string|unique:userstb,name|max:80",
+            "email"=>"required|unique:userstb,email|max:80",
             "password"=>"required|confirmed|max:255",
-            'phone' => "min:10|nullable" 
+            'phone' => "min:10|required|string" 
         ]);
 
         $checkUser = UserTb::where('email' , $field['email'])->first();

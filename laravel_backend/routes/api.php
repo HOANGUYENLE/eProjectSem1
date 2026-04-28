@@ -21,9 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });*/
 
-Route::apiResource('usertb', UserTbController::class);
 Route::apiResource('reviews', ReviewController::class);
-
 
 Route::get('/faq', [FaqController::class, 'index']);
 Route::get('/faq/{post}', [FaqController::class, 'show']);
@@ -32,15 +30,17 @@ Route::get('/lawyer/{lawyerID}/reviews', [ReviewController::class, 'show']);
 Route::middleware(['auth:sanctum', 'roles:1,2,3'])->group(function(){
     Route::post('/faq', [FaqController::class, 'store']);
     Route::post('/lawyer/{lawyer}/reviews', [ReviewController::class, 'store']);
+    Route::get('/profile/{user}', [UserTbController::class, 'show']);
+    Route::put('/profile/{user}', [UserTbController::class, 'update']);
 });
 Route::middleware(['auth:sanctum', 'roles:1,3'])->group(function(){
     Route::put('/faq/{id}', [FaqController::class, 'update']);
 });
 Route::middleware(['auth:sanctum', 'roles:1'])->group(function(){
-    Route::put('/lawyer/{lawyerID}/reviews/{reviewID}', [ReviewController::class, 'update']);    
+    Route::put('/lawyer/{lawyerID}/reviews/{reviewID}', [ReviewController::class, 'update']);
+    Route::put('/admin/{lawyer}?upRank={status}', [ReviewController::class, 'update']);    
     Route::delete('/faq/{id}', [FaqController::class, 'destroy']);
     Route::delete('/lawyer/{lawyerID}/reviews/{reviewID}', [ReviewController::class, 'destroy']);
-    
 });
 
 

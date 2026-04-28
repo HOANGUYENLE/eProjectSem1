@@ -38,8 +38,12 @@ class FaqController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(FAQ $post)
+    public function show(string $FAQ_id)
     {
+        $post = FAQ::where("id", $FAQ_id)->first();
+        if(!$post){
+            return response()->json(["err"=>"FAQ post not found"], 404);
+        }
         return $post;
     }
 
@@ -54,6 +58,9 @@ class FaqController extends Controller
         $field = null;
 
         $post = FAQ::where("id", $FAQ_id)->first();
+        if(!$post){
+            return response()->json(["err"=>"FAQ post not found"], 404);
+        }
 
         if($userRole === "lawyer"){
             $field = $request->validate([

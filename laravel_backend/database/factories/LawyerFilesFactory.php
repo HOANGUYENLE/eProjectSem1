@@ -23,6 +23,7 @@ class LawyerFilesFactory extends Factory
             'yearExp' => fake()->numberBetween(1,8),
             'cardNumber' =>fake()->unique()->numerify("############"),
             'licenseNumber' => fake()->unique()->text(12),
+            'city' => fake()->numberBetween(1, 20),
             'status' => fake()->randomElement(['pending', 'approve', 'reject'])
         ];
     }
