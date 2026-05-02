@@ -1,0 +1,142 @@
+.faq-dashboard {
+  display: flex;
+  gap: 2rem;
+  font-family: Arial, sans-serif;
+}
+
+/* Left panel */
+.faq-detail {
+  flex: 1;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.faq-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 0.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: #888;
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #e74c3c;
+}
+
+.faq-detail textarea {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.faq-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.faq-actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.faq-actions button:first-child {
+  background: #2ecc71;
+  color: #fff;
+}
+
+.faq-actions button:last-child {
+  background: #e74c3c;
+  color: #fff;
+}
+
+/* Right panel */
+.faq-table {
+  flex: 2;
+}
+
+.faq-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.faq-table th, .faq-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.faq-table thead {
+  background: #2c3e50;
+  color: #fff;
+}
+
+.faq-table tbody tr:hover {
+  background: #f9f9f9;
+}
+
+.arrangeBtn{
+    display: flex;
+}
+
+.view-btn {
+  color: dark;
+  border: 2px solid blue;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+.view-btn:hover {
+  background: #2980b9;
+  color: white;
+}
+
+.delete-btn {
+  color: dark;
+  border: 2px solid red;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: red;
+  color: white
+}
+
+.ask-btn {
+  margin-top: 1rem;
+  
+  padding: 8px 16px;
+  background: #f1c40f;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ask-btn:hover{
+    background-color: yellow;
+    box-shadow: 0 4px 20px #f1c40f;
+}

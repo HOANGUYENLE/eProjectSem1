@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\role;
+use App\Models\SystemNotification;
+use App\Models\PivotNotice;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 class UserTb extends Authenticatable
@@ -24,6 +27,27 @@ class UserTb extends Authenticatable
 
     public function reviews():HasMany{
         return $this->hasMany(\App\Models\Review::class, 'user_id');
+    }
+
+    public function lawyers():HasMany{
+        return $this->hasMany(\App\Models\LawyerFiles::class, 'lawyer_id');
+    }
+
+    public function appointment():BelongsToMany{
+        return $this->belongsToMany(
+            \App\Models\AvailabilitySlot::class,
+            'appointments', 'customer_id', 'slot_id'
+        )->withPivot("status", "request_text" ,"response_text")
+        ->withTimestamps();
+    }
+
+    public function SystemNotification():BelongsToMany{
+        return $this->belongsToMany(
+            SystemNotification::class,
+            'pivot_notifications',
+            'user_id',
+            'notification_id'
+        )->using(PivotNotice::class);
     }
 }
 

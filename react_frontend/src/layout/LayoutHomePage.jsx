@@ -1,7 +1,10 @@
-import { Outlet, Link } from "react-router-dom"
+import { Outlet, Link, useNavigate } from "react-router-dom"
 import "../css/header.css"
+import Login from "../Auth/Login"
 
 export default function LayoutHomePage(){
+    const navigate = useNavigate();
+
     return (
         <>
         <nav className="navbar navbar-expand-lg navbar-light bg-light p-3">
@@ -35,7 +38,7 @@ export default function LayoutHomePage(){
                                 </ul>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="/">FAQ/Question</Link>
+                                <Link className="nav-link" to="/FAQ">FAQ/Question</Link>
                             </li>
 
                             <li className="nav-item">
@@ -56,52 +59,20 @@ export default function LayoutHomePage(){
                                 </ul>
                             </li>
                             <li className="nav-item">
-                            <button
-                                type="button"
-                                className="btn btn-primary"
-                                data-bs-toggle="modal"
-                                data-bs-target="#SigninBtn"
-                            >
-                                Signin
-                            </button>
+                            <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#SigninBtn"> Signin </button>
 
                             <div className="modal fade" tabIndex={-1} id="SigninBtn" aria-labelledby="SigninTitle">
                                 <div className="modal-dialog">
-                                <div className="modal-content">
-                                    <div className="modal-header">
-                                    <h2 id="SigninTitle" className="modal-title text-center w-100 fw-bolder">
-                                        Sign in
-                                    </h2>
-                                    </div>
-                                    <div className="modal-body">
-                                    <form>
-                                        <div className="mb-3 mt-3">
-                                        <label htmlFor="name" className="form-label">Username:</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="name"
-                                            placeholder="Enter username"
-                                            name="name"
-                                        />
+                                    <div className="modal-content">
+                                        <div className="modal-header">
+                                        <h2 id="SigninTitle" className="modal-title text-center w-100 fw-bolder"> Sign in </h2>
+                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <div className="mb-3">
-                                        <label htmlFor="password" className="form-label">Password:</label>
-                                        <input
-                                            type="password"
-                                            className="form-control"
-                                            id="password"
-                                            placeholder="Enter password"
-                                            name="password"
-                                        />
+                                        <div className="modal-body"><Login/></div>
+                                        <div className="modal-footer d-flex justify-content-center">
+                                            <button className="btn text-center" data-bs-toggle="modal" data-bs-target="#SigninBtn" onClick={()=>navigate("/signup")}>Don't have account? Just sign up</button>
                                         </div>
-                                        <button type="submit" className="btn btn-primary w-100">Submit</button>
-                                    </form>
                                     </div>
-                                    <div className="modal-footer text-center">
-                                    <a href="/signup" className="nav-link text-center">Don't have account? Sign up</a>
-                                    </div>
-                                </div>
                                 </div>
                             </div>
                             </li>
@@ -109,7 +80,9 @@ export default function LayoutHomePage(){
                     </div>
                 </div>
         </nav>
-
+        <main>
+            <Outlet/>
+        </main>
 
         </>
     )

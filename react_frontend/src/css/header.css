@@ -44,10 +44,7 @@
   max-height: 400px;
   overflow-y: auto;
 }
-.btn-primary {
-  border-radius: 20px;
-  font-weight: 600;
-}
+
 .navbar {
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }

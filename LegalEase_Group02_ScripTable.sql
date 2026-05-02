@@ -149,6 +149,7 @@ CREATE TABLE appointments (
     slot_id INT NOT NULL,
     request_text LONGTEXT,
     response_text LONGTEXT,
+    status ENUM('pending','completed') NOT NULL DEFAULT 'pending',
 
     created_at DATETIME(3) DEFAULT NOW(3),
     updated_at DATETIME(3) DEFAULT NOW(3),

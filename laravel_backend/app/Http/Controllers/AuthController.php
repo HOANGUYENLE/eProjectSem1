@@ -13,15 +13,20 @@ class AuthController extends Controller
             "name"=> "required|string|unique:userstb,name|max:80",
             "email"=>"required|unique:userstb,email|max:80",
             "password"=>"required|confirmed|max:255",
-            'phone' => "min:10|required|string" 
+            'phone' => "min:8|required|string" 
         ]);
 
         $checkUser = UserTb::where('email' , $field['email'])->first();
         if($checkUser){
-            return ['register_err'=>'Email already existed'];
+            return response()->json([
+                "message"=>"This user's email already registered",
+                "errors"=> [
+                    "email"=> ["The email field is required."],
+                    "password"=> ["The password field must be confirmed."]]],403);
         }
         $field['password'] = bcrypt($field['password']);
         $newUser = UserTb::create([...$field, 'role_id' => 2]);
+        $newUser->load("role");
         $userToken = $newUser->createToken($request->name)->plainTextToken;
         return ['user' => $newUser, 'token' => $userToken];
     }

@@ -1,0 +1,104 @@
+.TopHeaderDashboard{
+    display:flex;
+    gap: 1.5rem;
+    margin-bottom: 1rem
+}
+
+.TopHeaderDashboard .box{
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px #00000014;
+    display: flex;
+    align-items: center;
+    gap: 1.25;
+    flex: 1;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.box:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.box .smallImage img{
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    border-radius: 12px;
+    margin-left: 1rem;
+    margin-right:1rem;
+}
+
+.TopHeaderDashboard .box .smallImage{
+    width: auto;                     /* Better for responsiveness */
+    flex-shrink: 0;
+}
+
+.TopHeaderDashboard .box .smallImage img{
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.TopHeaderDashboard .box .boxLabel{
+    color: #64748b;
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.TopHeaderDashboard .box .boxValue{
+    margin: 0;
+    font-size: 2.0rem;
+    color: #0A1428;
+    font-weight: 700;
+}
+
+.ContentBodyDashboard .chartRow-1{
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.ContentBodyDashboard .chartRow-3{
+    display: grid;
+    grid-template-columns: 4fr 7fr;
+    gap: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.chartCard{
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.75rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    height: 300px;
+}
+
+.columnChart{
+    width: 100%;
+}
+
+.ContentBodyDashboard,
+.TopHeaderDashboard {
+  max-width: 1200px;   /* or whatever width you prefer */      /* centers the content */
+  padding: 0 1rem;     /* adds breathing room on smaller screens */
+}
+
+@media(min-width: 1250px){
+    .ContentBodyDashboard .chartRow-1{
+        grid-template-columns: 5fr 7fr;
+    }
+}
+
+@media(max-width: 992px){
+    .ContentBodyDashboard .chartRow-1, 
+    .ContentBodyDashboard .chartRow-3{
+        grid-template-columns: 1fr;
+    }
+}
+
+.chartTitle{
+    text-align: center;
+}

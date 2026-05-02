@@ -1,0 +1,21 @@
+.form-group{
+    margin: 1rem;
+}
+
+.form-group label{
+    margin-bottom: 5px;
+    padding-left: 10px;
+}
+
+.form-group button{
+    border-radius: 10px;
+    font-size: 20px;
+    min-width: 150px;
+    font-weight: 600;
+}
+
+.alert-danger{
+    padding: 10px;
+    margin-top: 3px;
+    margin-bottom: 4px
+}

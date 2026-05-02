@@ -1,0 +1,32 @@
+/* Status badges for content table */
+.status {
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+}
+
+.status.published { background: #27ae60; color: #fff; }
+.status.expired { background: #e74c3c; color: #fff; }
+
+/* Bulk actions (Delete All button) */
+.bulk-actions {
+  margin-top: 1rem;
+  text-align: left;
+}
+
+.delAllBtn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #e74c3c;
+  color: #fff;
+  transition: background 0.2s ease;
+}
+
+.delAllBtn:hover {
+  background: #c0392b;
+}

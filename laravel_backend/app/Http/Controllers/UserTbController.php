@@ -62,10 +62,6 @@ class UserTbController extends Controller
         return $user;
     }
 
-    public function upToLawyerRank(Request $request, LawyerFiles $lawyer, string $status){
-        return $lawyer;
-    }
-
     /**
      * Remove the specified resource from storage.
      */

@@ -6,6 +6,11 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserTbController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SystemNotificationController;
+use App\Http\Controllers\PivotSys;
+use App\Http\Controllers\LawyerFilesController;
+use App\Http\Controllers\AvailableSlotController;
+use App\Http\Controllers\AppointmentController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -27,7 +32,15 @@ Route::get('/faq', [FaqController::class, 'index']);
 Route::get('/faq/{post}', [FaqController::class, 'show']);
 Route::get('/lawyer/{lawyerID}/reviews', [ReviewController::class, 'show']);
 
+Route::get('/SysNotice', [SystemNotificationController::class, 'index']);
+Route::get('/SysNotice/{systemNotice}', [SystemNotificationController::class, 'show']);
+Route::get("/seeLawyer/{lawyer}", [LawyerFilesController::class, 'show']);
+Route::get("/allLawyers", [LawyerFilesController::class, 'index']);
+Route::get("/lawyerSchedule/{lawyer}", [AvailableSlotController::class, 'show']);
+
 Route::middleware(['auth:sanctum', 'roles:1,2,3'])->group(function(){
+    Route::get('/reminder/detail/{user}', [PivotSys::class, 'show']);
+    Route::get('/reminder/{user}', [PivotSys::class, 'index']);
     Route::post('/faq', [FaqController::class, 'store']);
     Route::post('/lawyer/{lawyer}/reviews', [ReviewController::class, 'store']);
     Route::get('/profile/{user}', [UserTbController::class, 'show']);
@@ -36,11 +49,36 @@ Route::middleware(['auth:sanctum', 'roles:1,2,3'])->group(function(){
 Route::middleware(['auth:sanctum', 'roles:1,3'])->group(function(){
     Route::put('/faq/{id}', [FaqController::class, 'update']);
 });
+
+Route::middleware(['auth:sanctum', 'roles:2,3'])->group(function(){
+    Route::get('/booking/seeBooking', [AppointmentController::class, 'show']);
+    Route::post("/updateBooking/{status}", [AppointmentController::class, 'CUReschedule']);
+    Route::get("/reminder", [AppointmentController::class, 'sendReminder']);
+    Route::post("/ReadCancel/{notification}",[AppointmentController::class, 'isReadCancel']);
+});
+
 Route::middleware(['auth:sanctum', 'roles:1'])->group(function(){
-    Route::put('/lawyer/{lawyerID}/reviews/{reviewID}', [ReviewController::class, 'update']);
-    Route::put('/admin/{lawyer}?upRank={status}', [ReviewController::class, 'update']);    
+    Route::post('/SysNotice', [SystemNotificationController::class, 'store']);
+
+    Route::put("/seeDocument/{lawyer}", [LawyerFilesController::class, 'update']);
+    Route::put('/SysNotice/{systemNotification}', [SystemNotificationController::class, 'update']);
+    Route::put('/confirmDocument/{lawyer}', [LawyerFilesController::class, 'udpate']);
+    
     Route::delete('/faq/{id}', [FaqController::class, 'destroy']);
     Route::delete('/lawyer/{lawyerID}/reviews/{reviewID}', [ReviewController::class, 'destroy']);
+    Route::delete('/SysNotice/{systemNotification}', [SystemNotificationController::class, 'destroy']);
+});
+
+Route::middleware(['auth:sanctum', 'roles:2'])->group(function(){
+    Route::post("/sendDocument", [LawyerFilesController::class, 'store']);
+    Route::post('/booking', [AppointmentController::class, 'store']);
+    
+});
+
+Route::middleware(['auth:sanctum', 'roles:3'])->group(function(){
+    Route::post("/addNewSlot", [AvailableSlotController::class, 'store']);
+    Route::delete("/destroyOneSlot/{id}", [AvailableSlotController::class, 'destroy']);
+    Route::post("/completed/{appointment}",[AppointmentController::class, 'isExpired']);
 });
 
 
