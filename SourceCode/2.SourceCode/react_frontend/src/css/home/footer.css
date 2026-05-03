@@ -1,0 +1,9 @@
+.social-icons a {
+  margin: 0 10px;
+  font-size: 24px;
+  color: white;
+  transition: color 0.3s;
+}
+.social-icons a:hover {
+  color: rgb(236, 199, 135); /* Bootstrap blue or your brand color */
+}
