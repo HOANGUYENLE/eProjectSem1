@@ -17,7 +17,7 @@ export default function HomepageFAQ(){
 
   return (
     <div className="container my-4">
-      <h2 className="mb-4">FAQ Dashboard</h2>
+      <h2 className="mb-4 h1 text-center">FAQ Dashboard</h2>
       <div className="accordion" id="faqAccordion">
         <FAQSection title="Lawyer FAQ" faqs={lawyerFaqs} parentId="faqAccordion" sectionId="lawyerFaq" />
         <FAQSection title="Customer FAQ" faqs={customerFaqs} parentId="faqAccordion" sectionId="customerFaq" />

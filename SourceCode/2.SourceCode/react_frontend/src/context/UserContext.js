@@ -1,13 +1,36 @@
 import { createContext, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const AuthContext = new createContext();
 export default function UserInfoProvider({children}){
+    const navigate = useNavigate();
     const auth = JSON.parse(localStorage.getItem('user')) || {};
     const [user, setUser] = useState({
         name: auth.name || null,
         role: auth.role || null,
         token: auth.token||null
     })
+
+    const handleLogout = async (e)=>{
+        e.preventDefault();
+        navigate("/");
+        try{
+          const res = await axios.post("/api/logout", {}, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${user.token}`
+            }
+          });
+        }
+        catch (errors){
+            if(errors.response){
+                console.log(errors.response.data);
+            }   
+        }
+        removeUserInfo();
+        navigate("/");
+    }
 
     const updateUserinfo = (name, role)=>{
         localStorage.setItem('user', JSON.stringify({
@@ -41,6 +64,6 @@ export default function UserInfoProvider({children}){
     }
 
     return (
-        <AuthContext.Provider value={{user, setUser, saveUserInfo, updateUserinfo, removeUserInfo}}> {children} </AuthContext.Provider>
+        <AuthContext.Provider value={{user, setUser, saveUserInfo, updateUserinfo, removeUserInfo, handleLogout, navigate}}> {children} </AuthContext.Provider>
     )
 }

@@ -133,3 +133,7 @@ html{
     height: 300px; /* smaller but consistent */
   }
 }
+
+.lawyerfile h1{
+  font-size: 5rem;
+}

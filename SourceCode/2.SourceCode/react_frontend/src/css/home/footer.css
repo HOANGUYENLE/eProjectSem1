@@ -7,3 +7,18 @@
 .social-icons a:hover {
   color: rgb(236, 199, 135); /* Bootstrap blue or your brand color */
 }
+
+.search{
+  margin-bottom: 120px;
+}
+
+.footer_container{
+  position: relative;
+
+}
+
+.footer{
+  position:fixed;
+  top: 83.5vh;
+  width: 100%
+}

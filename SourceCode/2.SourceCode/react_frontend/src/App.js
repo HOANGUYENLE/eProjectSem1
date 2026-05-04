@@ -15,6 +15,9 @@ import Register from './Auth/Register';
 import UserInfoProvider from './context/UserContext';
 import Profile from './layout/Profile';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import HomepageIndex from './layout/part/homepage/Index';
+import AdminProtection from './protectComponent/AdminProtection';
+import LawyerList from './Customer/LawyerList';
 
 const myClient = new QueryClient();
 
@@ -24,12 +27,14 @@ function App() {
       <UserInfoProvider>
         <Routes>
           <Route path="/" element={<LayoutHomePage/>}>
+            <Route index element={<HomepageIndex/>}/>
             <Route path="FAQ" element={<HomepageFAQ/>}/>
             <Route path="signup" element={<Register/>}/>
             <Route path="userInfo" element={<Profile/>}/>
+            <Route path="ListOfLawyer" element = {<LawyerList/>}/>
           </Route>
 
-          <Route path="/admin" element={<LayoutAdmin/>}>
+          <Route path="/admin" element={<AdminProtection><LayoutAdmin/></AdminProtection>}>
             <Route index element={<AdminDashboard/>}/>
             <Route path="lawyerManagement" element={<AdminLawyerManagement/>}/>
             <Route path="userManagement" element={<AdminUserManagement/>}/>

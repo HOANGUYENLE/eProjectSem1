@@ -13,7 +13,8 @@ class LawyerFilesController extends Controller
      */
     public function index()
     {
-        return LawyerFiles::all();
+        $allLawyer = LawyerFiles::with(["UserTb", "city", "specialization", "availability"])->get();
+        return $allLawyer;
     }
 
     /**
@@ -28,7 +29,7 @@ class LawyerFilesController extends Controller
             'cardNumber'     => 'required|string|max:20',
             'city'           => 'nullable|integer|exists:cities,id',
             'licenseNumber'  => 'required|string|max:50',
-            'documentImage'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'documentImage'  => 'nullable|image|mimes:jpg,jpeg,png,avif|max:2048',
             'specializations'  =>'required|array',
             'specializations.*'=>'distinct|exists:specializations,id'
         ]);

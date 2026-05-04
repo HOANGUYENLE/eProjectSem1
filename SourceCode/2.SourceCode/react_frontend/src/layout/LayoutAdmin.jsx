@@ -1,12 +1,18 @@
-import { Outlet, Link, NavLink } from "react-router-dom";
+import { Outlet, Link, NavLink, useNavigate } from "react-router-dom";
 import "../css/admin/sidebar.css"
+import { useContext } from "react";
+import { AuthContext } from "../context/UserContext";
+import { useEffect } from "react";
 
 export default function(){
+    const {user, navigate, handleLogout} = useContext(AuthContext);
+
+
     return (
         <div className="adminScreen">
           <div className="sidebar">
             <div className="logoContainer">
-              <img class="logo ms-auto me-auto" src="/logo/logo.png" alt="App Logo" />
+              <img className="logo ms-auto me-auto" src="/logo/logo.png" alt="App Logo" />
             </div>
             <hr />
             <ul className="nav nav-pills flex-column mb-auto">
@@ -19,7 +25,7 @@ export default function(){
               <hr />
               <li>
                 <form>
-                  <button type="submit" className="myBtnDanger">Logout</button>
+                  <button type="submit" className="myBtnDanger" onClick={(e)=>handleLogout(e)}>Logout</button>
                 </form>
               </li>
             </ul>

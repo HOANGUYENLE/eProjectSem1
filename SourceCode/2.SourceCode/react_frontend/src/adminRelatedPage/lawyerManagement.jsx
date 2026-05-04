@@ -3,8 +3,85 @@ import LineChart from "../chart/LineChart"
 import LineStackBar from "../chart/LineStackBar"
 import "../css/admin/adminDashBoard.css"
 import "../css/searchBar.css"
+import axios from "axios"
+import { useContext, useEffect } from "react"
+import { AuthContext } from "../context/UserContext"
+import { useQueries } from "@tanstack/react-query"
+import { useState } from "react"
 
 export default function AdminLawyerManagement(){
+    const {user, navigate, handleLogout} = useContext(AuthContext);
+    const [CityList, addCity] = useState([]);
+    const [SpecsList, addSpecs] = useState([]);
+    async function fetchLawyerData(){
+      const res = await axios.get("/api/allLawyers", {
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${user.token}`
+        }
+      });
+     
+      let arr = res.data.map(lawyer=>{
+        return {
+            name: lawyer.user_tb.name,
+            email: lawyer.user_tb.email,
+            address: lawyer.address,
+            city: lawyer.city,
+            image: lawyer.documentImage || null,
+            specialization: Array.isArray(lawyer.specialization) && lawyer.specialization.length > 0 ? lawyer.specialization.map(spec=>{ return spec.name }):  null,
+            status: lawyer.status,
+            years: lawyer.yearExp,
+            availability: Array.isArray(lawyer.availability) && lawyer.availability.length > 0 
+            ? lawyer.availability.map(each=>{ 
+                return {
+                    day_of_week: each.day_of_week,
+                    start_time: each.start_time,
+                    end_time: each.end_time,
+                    is_booked: each.is_booked
+                } 
+            }) : null,
+        };
+      });
+      
+      const AllCities = [...new Set(arr.map(l=>l.city.cityName))];
+      addCity(prevState => [...new Set([...prevState, ...AllCities])]);
+      return arr;
+    }
+
+    async function fetchSpecData(){
+        const res = await axios.get("/api/allSpecs", {
+            headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${user.token}`
+            }
+        });
+        if (!res.data) {
+            return []; // or null, but not undefined
+        }
+        return res.data
+    };
+
+    
+    const queriesResults = useQueries({
+      queries:[
+        { queryKey: ["lawyer"],
+          queryFn: fetchLawyerData,
+          refetchInterval: 1000 * 60
+        },
+        { queryKey: ["specs"],
+          queryFn: fetchSpecData,
+          refetchInterval: 1000 * 60
+        }
+      ]
+    });
+    const LawyerData = queriesResults[0]
+    const SpecData = queriesResults[1];
+    useEffect(()=>{
+        console.log("fetch Data: ", LawyerData.data, SpecData.data);
+    }, [LawyerData.data, SpecData.data]);
+
     let datasets = {
         'success': [25, 30, 28, 35, 40, 38, 23, 21, 23, 28, 35, 21],
         'cancel' : [15, 18, 22, 20, 25, 28, 30, 28, 35, 23, 21, 23],
@@ -16,7 +93,6 @@ export default function AdminLawyerManagement(){
         'cancel':  "Canceled Appointment",
         'total': "Total Appointment"
     }
-
     return (<>
     <div className="ContentBodyDashboard">
         <div className="chartRow-3">
@@ -52,16 +128,18 @@ export default function AdminLawyerManagement(){
             <div className="input-group" style={{ maxWidth: "200px" }}>
                 <select className="form-select" id="dropdownCity" name="dropdownCity">
                     <option defaultValue>Choose City...</option>
-                    <option value="1">HCMC</option>
-                    <option value="2">Hanoi</option>
-                    <option value="3">Da Nang</option>
+                    {CityList.map((value, index) => (
+                        <option>{value}</option>
+                    ))}
                 </select>
             </div>
-
 
             <div className="input-group" style={{ maxWidth: "220px" }}>
                 <select className="form-select" id="dropdownSpecialization" name="dropdownSpecialization">
                 <option defaultValue>Choose Specialization...</option>
+                {SpecData.isLoading?<div className="spinner-border"></div>:
+                <> {SpecData.data.map((value, index) => (<option key={value.id} value={value.id}>{value.name}</option> ))} </>
+                }
                 <option value="civil">Civil Law</option>
                 <option value="criminal">Criminal Law</option>
                 <option value="corporate">Corporate Law</option>
@@ -74,7 +152,7 @@ export default function AdminLawyerManagement(){
                 type="button"
                 id="filterDropdown"
                 data-bs-toggle="dropdown"> Filter </button>
-                <ul className="dropdown-menu p-3 mt-1">
+                <ul className="dropdown-menu p-3 mt-1 fs-3">
                     <li>
                         <div className="form-check">
                         <input className="form-check-input" type="radio" name="sortOption" id="sortNameAsc" />
@@ -101,7 +179,8 @@ export default function AdminLawyerManagement(){
             </div>
             </div>
         </div>
-        <div className="LawyerTable">
+        {LawyerData.isLoading? <div className="spinner-border"></div>:
+        <div className="LawyerTable fs-3">
             <table>
                 <thead>
                 <tr>
@@ -114,52 +193,18 @@ export default function AdminLawyerManagement(){
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    
-                    <td>John Doe</td>
-                    <td>123 Main Street</td>
-                    <td>HCMC</td>
-                    <td>
-                    <a href="/images/lawyer1.jpg" target="_blank" rel="noopener noreferrer">View image</a>
-                    </td>
-                    <td><span className="status pending">Pending</span></td>
-                    <td>
-                    <div className="actions">
-                        <button className="editBtn">Edit</button>
-                        <button className="delBtn">Delete</button>
-                    </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Jane Smith</td>
-                    <td>456 Nguyen Trai</td>
-                    <td>Hanoi</td>
-                    <td>
-                    <a href="/images/lawyer1.jpg" target="_blank" rel="noopener noreferrer">View image</a>
-                    </td>
-                    <td><span className="status approved">Approved</span></td>
-                    <td>
-                    <div className="actions">
-                        <button className="editBtn">Edit</button>
-                        <button className="delBtn">Delete</button>
-                    </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Michael Tran</td>
-                    <td>789 Le Loi</td>
-                    <td>Da Nang</td>
-                    <td>
-                        <a href="/images/lawyer1.jpg" target="_blank" rel="noopener noreferrer">View image</a>
-                    </td>
-                    <td><span className="status rejected">Rejected</span></td>
-                    <td>
-                    <div className="actions">
-                        <button className="editBtn">Edit</button>
-                        <button className="delBtn">Delete</button>
-                    </div>
-                    </td>
-                </tr>
+                    {LawyerData.data.map((value, index)=>{return(
+                    <tr>
+                        <td>{value.name}</td>
+                        <td>{value.address}</td>
+                        <td>{value.city.cityName}</td>
+                        <td><a href={value.image} target="_blank" rel="noopener noreferrer">View image</a></td>
+                        <td><span className={value.status === "approve"?"status approved fs-3":"status pending fs-3"}>{value.status}</span></td>
+                        <td><div className="actions">
+                            <button className="editBtn">Edit</button>
+                            <button className="delBtn">Delete</button>
+                        </div></td>
+                    </tr>)})}
                 </tbody>
             </table>
 
@@ -172,6 +217,8 @@ export default function AdminLawyerManagement(){
                 <button>Next</button>
             </div>
             </div>
+        }
+        
 
     </>)
 }

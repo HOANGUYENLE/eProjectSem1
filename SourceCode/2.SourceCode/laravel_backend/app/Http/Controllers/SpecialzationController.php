@@ -13,7 +13,8 @@ class SpecialzationController extends Controller
      */
     public function index()
     {
-        return Specialization::all();
+        $allSpec = Specialization::with(["lawyers"])->get();
+        return $allSpec;
     }
 
     /**

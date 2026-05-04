@@ -11,6 +11,7 @@ use App\Http\Controllers\PivotSys;
 use App\Http\Controllers\LawyerFilesController;
 use App\Http\Controllers\AvailableSlotController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\SpecialzationController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -36,6 +37,7 @@ Route::get('/SysNotice', [SystemNotificationController::class, 'index']);
 Route::get('/SysNotice/{systemNotice}', [SystemNotificationController::class, 'show']);
 Route::get("/seeLawyer/{lawyer}", [LawyerFilesController::class, 'show']);
 Route::get("/allLawyers", [LawyerFilesController::class, 'index']);
+Route::get("/allSpecs", [SpecialzationController::class, 'index']);
 Route::get("/lawyerSchedule/{lawyer}", [AvailableSlotController::class, 'show']);
 
 Route::middleware(['auth:sanctum', 'roles:1,2,3'])->group(function(){

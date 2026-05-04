@@ -1,21 +1,19 @@
 import { Outlet } from "react-router-dom"
 import { Link } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
-import { Swiper, SwiperSlide } from "swiper/react";   // ✅ components
+import { Swiper, SwiperSlide } from "swiper/react"; 
 import { Navigation } from "swiper/modules"
 import { useContext } from "react"
 import { AuthContext } from "../../../context/UserContext"
 import Login from "../../../Auth/Login";
 import "swiper/css";
-
+import "swiper/css/navigation";
+import axios from "axios";
 
 export default function Nav(){
-  const navigate = useNavigate();
-    const {user, setUser, saveUserInfo, removeUserInfo} = useContext(AuthContext)
-    const handleLogout = ()=>{
-        removeUserInfo();
-        navigate("/");
-    }
+    const navigate = useNavigate();
+    const {user, setUser, saveUserInfo, removeUserInfo, handleLogout} = useContext(AuthContext)
+    
     console.log(user);
     return (<>
     <nav className="navbar navbar-expand-lg navbar-light bg-light p-3">
@@ -64,6 +62,11 @@ export default function Nav(){
                             <li><a className="dropdown-item" href="#">Cần Thơ</a></li>
                         </ul>
                     </li>
+
+                    <li className="nav-item dropdown">
+                        <button className="nav-link btn" id="LawyerList" onClick={()=>navigate("/ListOfLawyer")}>View Lawyer List</button>
+                    </li>
+                    
                     <li className="nav-item">
                         <Link className="nav-link" to="/FAQ">FAQ/Question</Link>
                     </li>
@@ -95,6 +98,8 @@ export default function Nav(){
                 </ul>
                 :
                 <ul className="nav navbar-nav navbar-right">
+                    {user.role !== "admin"?
+                    <>
                     <li className="nav-item dropdown">
                         <button className="nav-link btn" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} fill="currentColor" className="bi bi-bell" viewBox="0 0 16 16">
@@ -109,94 +114,23 @@ export default function Nav(){
                         </ul>
                     </li>
                     <li>
-                        <div className="btn-group">
-                            <a role="button" className="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="/logo/iconProfile.png" className="iconImg" alt="profile" /></a>
-                            <ul className="dropdown-menu dropdown-menu-end profileList">
-                                <li><button className="dropdown-item" type="button" onClick={()=>navigate("/userInfo")}>Profile</button></li>
-                                <li><button className="dropdown-item" type="button">My Appointment</button></li>
-                                <li><button className="dropdown-item" type="button">Booking History</button></li>
-                                <li><hr className="dropdown-divider"></hr></li>
-                                <li><button className="dropdown-item btn-danger" type="button" onClick={()=>handleLogout()}>Logout</button></li>
-                            </ul>
-                        </div>
+                        <a role="button" className="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="/logo/iconProfile.png" className="iconImg" alt="profile" /></a>
+                        <ul className="dropdown-menu dropdown-menu-end profileList">
+                            <li className="fw-bolder fs-2 text-center">{user.name}</li>
+                            <li><hr className="dropdown-divider"></hr></li>
+                            <li><button className="dropdown-item" type="button" onClick={()=>navigate("/userInfo")}>Profile</button></li>
+                            <li><button className="dropdown-item" type="button">My Appointment</button></li>
+                            <li><button className="dropdown-item" type="button">Booking History</button></li>
+                            <li><hr className="dropdown-divider"></hr></li>
+                            <li><button className="dropdown-item btn-danger" type="button" onClick={(e)=>handleLogout(e)}>Logout</button></li>
+                        </ul>
                     </li>
+                    </>:<><li><a role="button"><img src="/logo/iconProfile.png" className="iconImg" alt="profile" onClick={()=>navigate("/admin")}/></a></li></>}
                 </ul>
                 }
             </div>
             </div>
     </nav>
-    <div className="home">
-        <Swiper
-          modules={[Navigation]}
-          navigation
-          loop={true}
-          className="myHome"
-        >
-          {/* SLIDE 1 */}
-          <SwiperSlide>
-            <div className="slide slide-one d-flex align-items-center">
-              <div className="col-6">
-                <h4>Welcome to LegalEase!</h4>
-                <h1>
-                  Best way to find your <span>trusted</span> lawyer
-                </h1>
-                <p>
-                  Find your dream lawyer by comparing profiles, exploring expertise,
-                  and choosing what fits your needs.
-                </p>
-
-                <div className="d-flex gap-3">
-                  <button className="btn btn-dark">About More</button>
-                  <button className="btn btn-outline-dark">Learn More</button>
-                </div>
-              </div>
-
-              <div className="col-6 text-center">
-                <img src="/homepage/1.avif" alt="" className="img-fluid" />
-              </div>
-            </div>
-          </SwiperSlide>
-
-          {/* SLIDE 2 */}
-          <SwiperSlide>
-            <div className="slide slide-two d-flex align-items-center">
-              <div className="col-6">
-                <h4>Welcome to LegalEase!</h4>
-                <h1>
-                  Discover your <span>perfect</span> lawyer
-                </h1>
-                <p>
-                  Explore trusted lawyers and connect with the best legal professionals for your needs.
-                </p>
-              </div>
-
-              <div className="col-6 text-center">
-                <img src="/homepage/2.jpg" alt="" className="img-fluid" />
-              </div>
-            </div>
-          </SwiperSlide>
-
-          {/* SLIDE 3 */}
-          <SwiperSlide>
-            <div className="slide slide-three d-flex align-items-center">
-              <div className="col-6">
-                <h4>Welcome to LegalEase!</h4>
-                <h1>
-                  Drive your <span>passion</span>
-                </h1>
-                <p>
-                  Choose the best lawyer that matches your needs and budget.
-                </p>
-              </div>
-
-              <div className="col-6 text-center">
-                <img src="/homepage/3.webp" alt="" className="img-fluid" />
-              </div>
-            </div>
-          </SwiperSlide>
-
-        </Swiper>
-      </div>
     </>)
 }

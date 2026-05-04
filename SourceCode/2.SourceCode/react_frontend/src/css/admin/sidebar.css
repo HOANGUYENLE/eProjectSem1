@@ -16,6 +16,7 @@
   width: 280px;         
   overflow-y: auto;
   z-index: 1000;
+  font-size: 20px;
 }
 
 .logoContainer{
@@ -94,9 +95,10 @@ hr {
   transition: all 0.3s ease;
 }
 
-.btn-danger:hover {
+.myBtnDanger:hover {
   background-color: #B91C1C;
   transform: translateY(-2px);
+  color: white;
 }
 
 .main-content {
@@ -104,4 +106,5 @@ hr {
   flex: 1;
   padding: 2rem;
   min-height: 100vh;
+  font-size: 1.3rem;
 }

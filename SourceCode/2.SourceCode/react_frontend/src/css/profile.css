@@ -11,3 +11,11 @@
 .profileList button:hover{
     font-weight: 600;
 }
+
+.form-label{
+    font-size: 2.5rem;
+}
+
+.form-control{
+    font-size: 2rem;
+}

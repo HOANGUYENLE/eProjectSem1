@@ -21,7 +21,7 @@ export default function Profile(){
         navigate("/signup"); 
     }
     const navigate = useNavigate();
-    
+    console.log(user);
     async function fetchUserData(){
         const res = await axios.get("/api/profile", {
             headers: {
@@ -30,6 +30,7 @@ export default function Profile(){
                 "Authorization": `Bearer ${user.token}`
             }
         });
+        console.log(res.data);
         setFormData(res.data);
         return res.data;
     }
@@ -67,7 +68,7 @@ export default function Profile(){
     const {data, error, isLoading } = useQuery({
         queryKey: ["profile", user?.token],
         queryFn: fetchUserData,
-        enabled: !!user,
+        enabled: !!user.token,
         refetchInterval: 1000 * 60
     });
     useEffect(()=>{
@@ -100,7 +101,7 @@ export default function Profile(){
                             {isLoading?
                             <div className="spinner-border"></div>:
                             <div className="col-md-8">
-                                <h3 className="mb-4">Personal Information</h3>
+                                <h1 className="mb-4 fs-1 fw-bold text-center">Personal Information</h1>
                                 <div className="row g-3">
                                     <div className="col-12">
                                         <label className="form-label fw-semibold">Username</label>
@@ -120,9 +121,10 @@ export default function Profile(){
                                 </div>
                             </div>}
                         </div>
-                        <div className="d-flex justify-content-center gap-3 mt-3">
-                            <button type="submit" className="btn btn-primary px-5">Save Changes</button>
-                            <button type="button" className="btn btn-secondary px-4">Cancel</button>
+                        <div className="d-flex justify-content-end gap-3 mt-3">
+                            <button type="button" className="btn btn-secondary px-5" onClick={()=>navigate("/")}>Cancel</button>
+                            <button type="submit" className="btn btn-primary">Save Changes</button>
+                            
                         </div>
                     </form>
                     </div>

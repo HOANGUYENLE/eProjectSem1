@@ -8,6 +8,9 @@
 
 .SearchBar .input-group select {
   min-width: 180px;
+  min-height: 50px;
+  border-radius: 8px;
+  font-size: 1.6rem
 }
 
 .SearchBar .dropdown .dropdown-menu {
