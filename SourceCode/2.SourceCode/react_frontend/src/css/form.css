@@ -1,0 +1,76 @@
+/* Main lawyer file container */
+.lawyerfile {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  font-size: 16px;
+}
+
+/* Section heading */
+.lawyerfile h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0A1428;
+  margin-bottom: 0.25rem;
+}
+
+.lawyerfile p.text-muted {
+  font-size: 1rem;   /* prevent tiny text */
+  color: #64748b !important;
+}
+
+/* Lawyer card container */
+.lawyerfile .card {
+  border: 1px solid #e2e8f0;   /* subtle border */
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Each lawyer row inside the card */
+.lawyerfile .card .row.align-items-center {
+  border: 1px solid whitesmoke;  /* divider between lawyers */
+  border-radius: 8px;
+  box-shadow: 0 4px 20px 1px #e2e8f0;
+  padding: 1.5rem 0;
+  margin: 1.5rem 0;
+}
+
+.lawyerfile .card .row.align-items-center:last-child {
+  border-bottom: none;  /* remove border for last entry */
+}
+
+/* Lawyer name */
+.lawyerfile h4 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #0A1428;
+  margin-bottom: 0.25rem;
+}
+
+/* Reviews and muted text */
+.lawyerfile .text-muted {
+  font-size: 0.95rem;
+}
+
+/* Buttons */
+.lawyerfile .btn {
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.lawyerfile .btn-primary {
+  background-color: #0A1428;
+  border-color: #0A1428;
+}
+
+.lawyerfile .btn-outline-primary {
+  border-color: #0A1428;
+  color: #0A1428;
+}
+
+.lawyerfile .btn-outline-primary:hover {
+  background-color: #0A1428;
+  color: #fff;
+}

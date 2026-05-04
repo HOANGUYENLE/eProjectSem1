@@ -1,3 +1,4 @@
+import "../css/form.css"
 export default function LawyerList(){
     return (
     <div className="container py-5 lawyerfile">
@@ -25,108 +26,102 @@ export default function LawyerList(){
             <div className="col-12">
             <div className="card h-100 shadow-sm border-0 overflow-hidden">
                 <div className="card-body p-4">
-                <div className="row align-items-center">
-                    <div className="col-md-2 col-sm-3 text-center mb-3 mb-md-0">
-                        <img src="https://via.placeholder.com/150" alt="Lawyer" className="rounded-circle border border-3 border-white shadow" style={{width: 130, height: 130, objectFit: 'cover'}} />
-                        <span className="badge bg-warning text-dark mt-2">PRO</span>
-                    </div>
-                    {/* Info */}
-                    <div className="col-md-6 col-sm-9">
-                        <h4 className="mb-1">Richard Scott Lawson</h4>
-                        <div className="d-flex align-items-center gap-2 mb-2">
-                            <span className="text-warning">★★★★★</span>
-                            <span className="text-muted">5.0 • 697 reviews</span>
+                    <div className="row align-items-center">
+                        <div className="col-md-2 col-sm-3 text-center mb-3 mb-md-0">
+                            <img src="https://via.placeholder.com/150" alt="Lawyer" className="rounded-circle border border-3 border-white shadow" style={{width: 130, height: 130, objectFit: 'cover'}} />
+                            <span className="badge bg-warning text-dark mt-2">PRO</span>
                         </div>
-                        <p className="mb-1 text-muted">
-                            <i className="bi bi-geo-alt" /> Lawson &amp; Berry • Ho Chi Minh City
-                        </p>
-                        <p className="mb-2 text-muted small">
-                            Licensed for 30 years • Practice Areas: Criminal Defense, Corporate Law, Family Law
-                        </p>
-                        <p className="text-muted mb-0">
-                            "Don't trust your future to a general practitioner. Call an expert today."
-                        </p>
-                    </div>
-                    <div className="col-md-4 text-end">
-                        <div className="mb-3">
-                            <button className="btn btn-primary w-100 mb-2">
-                            Make Appointment
-                            </button>
-                            <button className="btn btn-outline-primary w-100">
-                            View Profile
-                            </button>
+                        {/* Info */}
+                        <div className="col-md-6 col-sm-9">
+                            <h4 className="mb-1 fs-1">Richard Scott Lawson</h4>
+                            <div className="d-flex align-items-center gap-2 mb-2">
+                                <span className="text-warning fs-3">★★★★★</span>
+                                <span className="text-muted fs-3">5.0 • 697 reviews</span>
+                            </div>
+                            
+                            <p className="mb-2 text-muted small fs-4">
+                                Licensed for 30 years • Practice Areas: Criminal Defense, Corporate Law, Family Law...
+                            </p>
+                            <p className="text-muted mb-0 fs-5">
+                                "Don't trust your future to a general practitioner. Call an expert today."
+                            </p>
                         </div>
-                    <small className="text-muted d-block">Call: (028) 1234-5678</small>
-                    </div>
-                </div>
-                <div className="row align-items-center">
-                    <div className="col-md-2 col-sm-3 text-center mb-3 mb-md-0">
-                        <img src="https://via.placeholder.com/150" alt="Lawyer" className="rounded-circle border border-3 border-white shadow" style={{width: 130, height: 130, objectFit: 'cover'}} />
-                        <span className="badge bg-warning text-dark mt-2">PRO</span>
-                    </div>
-                    {/* Info */}
-                    <div className="col-md-6 col-sm-9">
-                        <h4 className="mb-1">Richard Scott Lawson</h4>
-                        <div className="d-flex align-items-center gap-2 mb-2">
-                            <span className="text-warning">★★★★★</span>
-                            <span className="text-muted">5.0 • 697 reviews</span>
+                        <div className="col-md-4 text-end">
+                            <div className="mb-3">
+                                <button className="btn btn-primary w-100 mb-2 fs-2">
+                                Make Appointment
+                                </button>
+                                <button className="btn btn-outline-primary w-100 fs-2">
+                                View Profile
+                                </button>
+                            </div>
+                        <small className="text-muted d-block">Call: (028) 1234-5678</small>
                         </div>
-                        <p className="mb-1 text-muted">
-                            <i className="bi bi-geo-alt" /> Lawson &amp; Berry • Ho Chi Minh City
-                        </p>
-                        <p className="mb-2 text-muted small">
-                            Licensed for 30 years • Practice Areas: Criminal Defense, Corporate Law, Family Law
-                        </p>
-                        <p className="text-muted mb-0">
-                            "Don't trust your future to a general practitioner. Call an expert today."
-                        </p>
                     </div>
-                    <div className="col-md-4 text-end">
-                        <div className="mb-3">
-                            <button className="btn btn-primary w-100 mb-2">
-                            Make Appointment
-                            </button>
-                            <button className="btn btn-outline-primary w-100">
-                            View Profile
-                            </button>
+                    <div className="row align-items-center">
+                        <div className="col-md-2 col-sm-3 text-center mb-3 mb-md-0">
+                            <img src="https://via.placeholder.com/150" alt="Lawyer" className="rounded-circle border border-3 border-white shadow" style={{width: 130, height: 130, objectFit: 'cover'}} />
+                            <span className="badge bg-warning text-dark mt-2">PRO</span>
                         </div>
-                    <small className="text-muted d-block">Call: (028) 1234-5678</small>
-                    </div>
-                </div>
-                <div className="row align-items-center">
-                    <div className="col-md-2 col-sm-3 text-center mb-3 mb-md-0">
-                        <img src="https://via.placeholder.com/150" alt="Lawyer" className="rounded-circle border border-3 border-white shadow" style={{width: 130, height: 130, objectFit: 'cover'}} />
-                        <span className="badge bg-warning text-dark mt-2">PRO</span>
-                    </div>
-                    {/* Info */}
-                    <div className="col-md-6 col-sm-9">
-                        <h4 className="mb-1">Richard Scott Lawson</h4>
-                        <div className="d-flex align-items-center gap-2 mb-2">
-                            <span className="text-warning">★★★★★</span>
-                            <span className="text-muted">5.0 • 697 reviews</span>
+                        {/* Info */}
+                        <div className="col-md-6 col-sm-9">
+                            <h4 className="mb-1 fs-1">Richard Scott Lawson</h4>
+                            <div className="d-flex align-items-center gap-2 mb-2">
+                                <span className="text-warning fs-3">★★★★★</span>
+                                <span className="text-muted fs-3">5.0 • 697 reviews</span>
+                            </div>
+                            
+                            <p className="mb-2 text-muted small fs-4">
+                                Licensed for 30 years • Practice Areas: Criminal Defense, Corporate Law, Family Law...
+                            </p>
+                            <p className="text-muted mb-0 fs-5">
+                                "Don't trust your future to a general practitioner. Call an expert today."
+                            </p>
                         </div>
-                        <p className="mb-1 text-muted">
-                            <i className="bi bi-geo-alt" /> Lawson &amp; Berry • Ho Chi Minh City
-                        </p>
-                        <p className="mb-2 text-muted small">
-                            Licensed for 30 years • Practice Areas: Criminal Defense, Corporate Law, Family Law
-                        </p>
-                        <p className="text-muted mb-0">
-                            "Don't trust your future to a general practitioner. Call an expert today."
-                        </p>
-                    </div>
-                    <div className="col-md-4 text-end">
-                        <div className="mb-3">
-                            <button className="btn btn-primary w-100 mb-2">
-                            Make Appointment
-                            </button>
-                            <button className="btn btn-outline-primary w-100">
-                            View Profile
-                            </button>
+                        <div className="col-md-4 text-end">
+                            <div className="mb-3">
+                                <button className="btn btn-primary w-100 mb-2 fs-2">
+                                Make Appointment
+                                </button>
+                                <button className="btn btn-outline-primary w-100 fs-2">
+                                View Profile
+                                </button>
+                            </div>
+                        <small className="text-muted d-block">Call: (028) 1234-5678</small>
                         </div>
-                    <small className="text-muted d-block">Call: (028) 1234-5678</small>
                     </div>
-                </div>
+                    <div className="row align-items-center">
+                        <div className="col-md-2 col-sm-3 text-center mb-3 mb-md-0">
+                            <img src="https://via.placeholder.com/150" alt="Lawyer" className="rounded-circle border border-3 border-white shadow" style={{width: 130, height: 130, objectFit: 'cover'}} />
+                            <span className="badge bg-warning text-dark mt-2">PRO</span>
+                        </div>
+                        {/* Info */}
+                        <div className="col-md-6 col-sm-9">
+                            <h4 className="mb-1 fs-1">Richard Scott Lawson</h4>
+                            <div className="d-flex align-items-center gap-2 mb-2">
+                                <span className="text-warning fs-3">★★★★★</span>
+                                <span className="text-muted fs-3">5.0 • 697 reviews</span>
+                            </div>
+                            
+                            <p className="mb-2 text-muted small fs-4">
+                                Licensed for 30 years • Practice Areas: Criminal Defense, Corporate Law, Family Law...
+                            </p>
+                            <p className="text-muted mb-0 fs-5">
+                                "Don't trust your future to a general practitioner. Call an expert today."
+                            </p>
+                        </div>
+                        <div className="col-md-4 text-end">
+                            <div className="mb-3">
+                                <button className="btn btn-primary w-100 mb-2 fs-2">
+                                Make Appointment
+                                </button>
+                                <button className="btn btn-outline-primary w-100 fs-2">
+                                View Profile
+                                </button>
+                            </div>
+                        <small className="text-muted d-block">Call: (028) 1234-5678</small>
+                        </div>
+                    </div>
                 </div>
             </div>
             </div>
