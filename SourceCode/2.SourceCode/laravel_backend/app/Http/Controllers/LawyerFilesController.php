@@ -14,7 +14,10 @@ class LawyerFilesController extends Controller
      */
     public function index()
     {
-        $allLawyer = LawyerFiles::with(["UserTb", "city", "specialization", "availability"])->get()->map(function ($lawyer){
+        $allLawyer = LawyerFiles::with(["UserTb", "city", "specialization", 
+        "availability"=>function ($each){ 
+            $each->orderBy("day_of_week");
+        }])->get()->map(function ($lawyer){
             $lawyer->documentImage = $lawyer->documentImage?
             asset('storage/' . $lawyer->documentImage)
             :null;

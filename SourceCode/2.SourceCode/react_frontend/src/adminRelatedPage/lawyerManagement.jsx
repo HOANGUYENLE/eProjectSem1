@@ -17,6 +17,9 @@ export default function AdminLawyerManagement(){
     const [CityList, addCity] = useState([]);
     const [SpecsList, addSpecs] = useState([]);
     const [Status, setStatus] = useState(null);
+
+    const [pieChartStatus, setPieCharStatus] = useState(null);
+
     const queriesResults = useQueries({
       queries:[
         { queryKey: ["lawyer"],
@@ -36,9 +39,22 @@ export default function AdminLawyerManagement(){
     useEffect(()=>{
         //console.log("fetch Data: ", LawyerData.data, SpecData.data);
         if(LawyerData?.data){
+           
             const AllCities = [...new Set(LawyerData.data.map(l=>l.city.cityName))];
             addCity(prevState => [...new Set([...prevState, ...AllCities])]);
+                        
+            const countingStatus = LawyerData.data.reduce((initStat, each)=>{
+                initStat[each.status] = (initStat[each.status] || 0) + 1
+                return initStat;
+            }, {});
+
+            setPieCharStatus([
+                countingStatus.approve || 0,
+                countingStatus.pending || 0,
+                countingStatus.reject || 0,
+            ]);
         }
+
     }, [LawyerData.data, SpecData.data]);
 
     const handleStatus = (value) => {
@@ -78,11 +94,12 @@ export default function AdminLawyerManagement(){
             <div className="chartCard circleChart">
                 <h5 className="chartTitle">Pending Lawyer documents</h5>
                 <div style={{height: "200px", position: "relative", width:"100%" ,maxWidth: "400px"}}>
-                    <PieChart label={["Approved Documents", "Pending Documents", "Rejected Documents"]} value={[45, 35, 20]}/>
+                    {!pieChartStatus ? <div className="spinner-border"></div>: <PieChart label={["Approved Documents", "Pending Documents", "Rejected Documents"]} value={pieChartStatus}/>}
+                    
                 </div>
             </div>
             <div className="chartCard lineChart">
-                <h5 className="chartTitle">Number of Appointments per Month</h5>
+                <h5 className="chartTitle">Number of appointments per month</h5>
                 <div style={{height: "200px", width:"100%" ,maxWidth: "600px"}}>
                     <LineStackBar datasets={datasets} labels={labels}/>
                 </div>
@@ -172,10 +189,9 @@ export default function AdminLawyerManagement(){
                             <td>{value.address}</td>
                             <td>{value.city.cityName}</td>
                             <td><a href={value.image} target="_blank" rel="noopener noreferrer">View image</a></td>
-                            <td><span className={value.status === "approve"?"status approved fs-3":"status pending fs-3"}>{value.status}</span></td>
+                            <td><span className={value.status === "approve"?"status approved fs-3":value.status === "pending"?"status pending fs-3":"status rejected fs-3"}>{value.status}</span></td>
                             <td><div className="actions d-flex justify-content-start">
-                                <button type="button" className="editBtn" data-bs-toggle="modal" data-bs-target={`#lawyerModal-${value.id}`} onClick={()=>handleStatus(value.status)}>Validate</button>
-                                <button className="delBtn">Delete</button>
+                                <button type="button" className="btn btn-info p-3" data-bs-toggle="modal" data-bs-target={`#lawyerModal-${value.id}`} onClick={()=>handleStatus(value.status)}>See Detail info</button>
                             </div></td>
                         </tr>)})}
                 </tbody>
@@ -222,7 +238,7 @@ export default function AdminLawyerManagement(){
 
                                         <div className="mb-3">
                                             <label className="form-label">Status</label>
-                                            <select class="form-select form-control" value={Status} onChange={(e)=>handleStatus(e.target.value)}>
+                                            <select class="form-select form-control" value={!Status?value.status:Status.status} onChange={(e)=>handleStatus(e.target.value)}>
                                                 <option value="pending">Pending</option>
                                                 <option value="reject">Reject</option>
                                                 <option value="approve">Approve</option>
@@ -237,7 +253,7 @@ export default function AdminLawyerManagement(){
                                             <label className="form-label">Available Time</label>
                                             <textarea rows={!value.availability?4:value.availability.length} className="form-control p-2" 
                                             value={!value.availability?"No available time yet": 
-                                                    value.availability.map((each)=>`${each.day_of_week} ${formatTime(each.start_time)}-${formatTime(each.end_time)}`).join("\n")} readOnly/>
+                                                    value.availability.map((each)=>`${each.day_of_week} ${formatTime(each.start_time)}-${formatTime(each.end_time)}, ${each.is_booked?"Booking": "Free"}`).join("\n")} readOnly/>
                                         </div>
                                     </form>
                                 </div>
@@ -252,7 +268,7 @@ export default function AdminLawyerManagement(){
                 )
             })}
             {/* Pagination */}
-            <div className="pagination">
+            <div className="pagination mt-5">
                 <button disabled>Previous</button>
                 <button className="active">1</button>
                 <button>2</button>
