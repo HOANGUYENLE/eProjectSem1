@@ -25,13 +25,13 @@ export default function FAQSection({ title, faqs, parentId, sectionId }) {
               <div className="card" key={faq.id}>
                 <div className="card-header" id={"heading" + faq.id}>
                   <h5 class="mb-0">
-                    <button className="btn btn-link" data-bs-toggle="collapse" data-bs-target={"#collapse"+faq.id} aria-expanded="true" aria-controls={"collapse"+faq.id}>
+                    <button className="btn btn-link nav-link fs-2" data-bs-toggle="collapse" data-bs-target={"#collapse"+faq.id} aria-expanded="true" aria-controls={"collapse"+faq.id}>
                       {faq.question}
                     </button>
                   </h5>
                 </div>
 
-              <div id={"collapse"+faq.id} className="collapse" aria-labelledby={"heading" + faq.id} data-bs-parent="#accordion2">
+              <div id={"collapse"+faq.id} className="collapse fs-2" aria-labelledby={"heading" + faq.id} data-bs-parent="#accordion2">
                 <div className="card-body">
                   {faq.answer}
                 </div>

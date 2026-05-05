@@ -61,10 +61,8 @@ Route::middleware(['auth:sanctum', 'roles:2,3'])->group(function(){
 
 Route::middleware(['auth:sanctum', 'roles:1'])->group(function(){
     Route::post('/SysNotice', [SystemNotificationController::class, 'store']);
-
-    Route::put("/seeDocument/{lawyer}", [LawyerFilesController::class, 'update']);
     Route::put('/SysNotice/{systemNotification}', [SystemNotificationController::class, 'update']);
-    Route::put('/confirmDocument/{lawyer}', [LawyerFilesController::class, 'udpate']);
+    Route::put('/confirmDocument/{lawyer}', [LawyerFilesController::class, 'update']);
     
     Route::delete('/faq/{id}', [FaqController::class, 'destroy']);
     Route::delete('/lawyer/{lawyerID}/reviews/{reviewID}', [ReviewController::class, 'destroy']);

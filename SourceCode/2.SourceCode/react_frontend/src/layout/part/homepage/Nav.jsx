@@ -9,6 +9,7 @@ import Login from "../../../Auth/Login";
 import "swiper/css";
 import "swiper/css/navigation";
 import axios from "axios";
+import { NavLink } from "react-router-dom";
 
 export default function Nav(){
     const navigate = useNavigate();
@@ -32,9 +33,7 @@ export default function Nav(){
             </button>
             <div className="collapse navbar-collapse" id="menuList">
                 <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/">Home</Link>
-                    </li>
+                    <li className="nav-item"> <NavLink to="/" end className={({isActive})=>isActive?"nav-link active":"nav-link"}>Home</NavLink> </li>
                     
                     <li className="nav-item dropdown">
                         <button className="nav-link btn dropdown-toggle" id="searchDropdown1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -64,38 +63,17 @@ export default function Nav(){
                     </li>
 
                     <li className="nav-item dropdown">
-                        <button className="nav-link btn" id="LawyerList" onClick={()=>navigate("/ListOfLawyer")}>View Lawyer List</button>
+                        <NavLink to="/ListOfLawyer" end className={({isActive})=>isActive?"nav-link active":"nav-link"}>View Lawyer List</NavLink>
                     </li>
                     
                     <li className="nav-item">
-                        <Link className="nav-link" to="/FAQ">FAQ/Question</Link>
+                        <NavLink to="/faq" end className={({isActive})=>isActive?"nav-link active":"nav-link"}>FAQ/Question List</NavLink>
                     </li>
                 </ul>
-                {!user.token?
-                    <ul className="navbar-nav mb-2 mb-lg-0">
-                    <li className="nav-item">
-                        <button
-                            type="button"
-                            className="btn btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#SigninBtn">
-                            Signin
-                        </button>
-                        <div className="modal fade" tabIndex={-1} id="SigninBtn" aria-labelledby="SigninTitle">
-                            <div className="modal-dialog">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h2 id="SigninTitle" className="modal-title text-center w-100 fw-bolder"> Sign in </h2>
-                                </div>
-                                <div className="modal-body"> <Login/></div>
-                                <div className="modal-footer d-flex justify-content-center">
-                                    <button className="btn text-center" data-bs-toggle="modal" data-bs-target="#SigninBtn" onClick={()=>navigate("/signup")}>Don't have account? Just sign up</button>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
+                {!user.token?<>
+                <Link to="/login" role="button" className="btn btn-primary">Signin</Link>
+                
+                </>
                 :
                 <ul className="nav navbar-nav navbar-right">
                     {user.role !== "admin"?

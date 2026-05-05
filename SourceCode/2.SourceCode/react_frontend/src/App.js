@@ -18,7 +18,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import HomepageIndex from './layout/part/homepage/Index';
 import AdminProtection from './protectComponent/AdminProtection';
 import LawyerList from './Customer/LawyerList';
-
+import Login from './Auth/Login';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 const myClient = new QueryClient();
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
             <Route index element={<HomepageIndex/>}/>
             <Route path="FAQ" element={<HomepageFAQ/>}/>
             <Route path="signup" element={<Register/>}/>
+            <Route path="login" element={<Login/>}/>
             <Route path="userInfo" element={<Profile/>}/>
             <Route path="ListOfLawyer" element = {<LawyerList/>}/>
           </Route>

@@ -1,15 +1,18 @@
 import "../css/form.css"
 export default function LawyerList(){
+    
+
+
     return (
     <div className="container py-5 lawyerfile">
         <div className="d-flex justify-content-between align-items-center mb-4">
             <div>
-            <h1 className="mb-1">List of Lawyer</h1>
-            <p className="text-muted mb-0">2,847 lawyers • 12,456 reviews</p>
+                <h1 className="mb-1">List of Lawyer</h1>
+                <p className="text-muted mb-0 fs-3">2,847 lawyers • 12,456 reviews</p>
             </div>
             <div className="d-flex align-items-center gap-3">
-            <span className="text-muted">Sort by:</span>
-            <select className="form-select w-auto" style={{minWidth: 180}}>
+            <span className="text-muted fs-2">Sort by:</span>
+            <select className="form-select w-auto fs-2" style={{minWidth: 180}}>
                 <option value="best">Best Match</option>
                 <option value="rating">Highest Rated</option>
                 <option value="experience">Most Experienced</option>
@@ -20,8 +23,10 @@ export default function LawyerList(){
         <div className="mb-5">
             <h5 className="mb-3">Narrow Results by Practice Area</h5>
             <div className="d-flex flex-wrap gap-2" id="practiceAreas">
+
             </div>
         </div>
+        <hr />
         <div className="row g-4" id="lawyerList">
             <div className="col-12">
             <div className="card h-100 shadow-sm border-0 overflow-hidden">
@@ -46,16 +51,15 @@ export default function LawyerList(){
                                 "Don't trust your future to a general practitioner. Call an expert today."
                             </p>
                         </div>
-                        <div className="col-md-4 text-end">
-                            <div className="mb-3">
-                                <button className="btn btn-primary w-100 mb-2 fs-2">
-                                Make Appointment
+                         <div className="col-md-4 text-end">
+                            <div className="mb-3 d-flex justify-content-center gap-4">
+                                <button className="btn btn-outline-primary w-50 fs-2">
+                                    Make Appointment
                                 </button>
-                                <button className="btn btn-outline-primary w-100 fs-2">
+                                <button className="btn btn-outline-info w-50 fs-2">
                                 View Profile
                                 </button>
                             </div>
-                        <small className="text-muted d-block">Call: (028) 1234-5678</small>
                         </div>
                     </div>
                     <div className="row align-items-center">
@@ -78,17 +82,17 @@ export default function LawyerList(){
                                 "Don't trust your future to a general practitioner. Call an expert today."
                             </p>
                         </div>
-                        <div className="col-md-4 text-end">
-                            <div className="mb-3">
-                                <button className="btn btn-primary w-100 mb-2 fs-2">
-                                Make Appointment
+                         <div className="col-md-4 text-end">
+                            <div className="mb-3 d-flex justify-content-center gap-4">
+                                <button className="btn btn-outline-primary w-50 fs-2">
+                                    Make Appointment
                                 </button>
-                                <button className="btn btn-outline-primary w-100 fs-2">
+                                <button className="btn btn-outline-info w-50 fs-2">
                                 View Profile
                                 </button>
                             </div>
-                        <small className="text-muted d-block">Call: (028) 1234-5678</small>
                         </div>
+
                     </div>
                     <div className="row align-items-center">
                         <div className="col-md-2 col-sm-3 text-center mb-3 mb-md-0">
@@ -111,15 +115,14 @@ export default function LawyerList(){
                             </p>
                         </div>
                         <div className="col-md-4 text-end">
-                            <div className="mb-3">
-                                <button className="btn btn-primary w-100 mb-2 fs-2">
-                                Make Appointment
+                            <div className="mb-3 d-flex justify-content-center gap-4">
+                                <button className="btn btn-outline-primary w-50 fs-2">
+                                    Make Appointment
                                 </button>
-                                <button className="btn btn-outline-primary w-100 fs-2">
+                                <button className="btn btn-outline-info w-50 fs-2">
                                 View Profile
                                 </button>
                             </div>
-                        <small className="text-muted d-block">Call: (028) 1234-5678</small>
                         </div>
                     </div>
                 </div>

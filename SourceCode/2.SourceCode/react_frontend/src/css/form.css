@@ -8,10 +8,15 @@
 
 /* Section heading */
 .lawyerfile h1 {
-  font-size: 2rem;
+  font-size: 5rem;
   font-weight: 700;
   color: #0A1428;
   margin-bottom: 0.25rem;
+}
+
+.lawyerfile h5{
+  font-size: 3rem;
+  font-weight: 600;
 }
 
 .lawyerfile p.text-muted {
@@ -60,11 +65,6 @@
   font-size: 0.95rem;
 }
 
-.lawyerfile .btn-primary {
-  background-color: #0A1428;
-  border-color: #0A1428;
-}
-
 .lawyerfile .btn-outline-primary {
   border-color: #0A1428;
   color: #0A1428;
@@ -74,3 +74,23 @@
   background-color: #0A1428;
   color: #fff;
 }
+
+.lawyerfile .card-body .row{
+  transition: transform 0.1s ease-in-out;
+}
+
+.lawyerfile .card-body .row:hover{
+  box-shadow: 0 4px 10px 1px rgba(0, 0, 0, 0.318);
+  transform: translate(10px, -10px);
+}
+
+.lawyerfile .card-body .row .text-end .btn-outline-info{
+  border-color: #006709;
+  color: #0A1428;
+}
+
+.lawyerfile .card-body .row .text-end .btn-outline-info:hover{
+  background-color: #006709;
+  color: #fff;
+} 
+

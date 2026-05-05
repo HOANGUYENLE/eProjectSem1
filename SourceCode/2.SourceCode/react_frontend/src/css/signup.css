@@ -2,9 +2,12 @@
     margin: 1rem;
 }
 
+.register{
+    min-height: 70vh
+}
+
 .form-group label{
     margin-bottom: 5px;
-    padding-left: 10px;
 }
 
 .form-group button{
@@ -18,4 +21,12 @@
     padding: 10px;
     margin-top: 3px;
     margin-bottom: 4px
+}
+
+.register .form-group label{
+    font-size: 2rem;
+}
+
+.register .form-group input{
+    font-size: 1.8rem;
 }

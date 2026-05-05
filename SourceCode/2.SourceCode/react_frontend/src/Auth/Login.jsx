@@ -21,30 +21,43 @@ export default function Login(){
             let role = res.data.user.role.RoleName;    
             let name = res.data.user.name;
             let token = res.data.token;
-            saveUserInfo(name, role, token);
-            console.log(role, name, token);
+            await saveUserInfo(name, role, token);
+            if(res.data){
+                navigate("/");
+            }
         }
         catch (errors){
             if(errors.response){
-                console.log(errors.response.data);
+                alert(`Error ${errors.response.status}: ${errors.response.data.message || "Unexpected error"}`);
             }   
         }
     };
 
     return (<>
-    <form className="login" onSubmit={(e)=>handleLogin(e)}>
-        <div className="mb-3 mt-3 fs-1">
-            <label htmlFor="name" className="form-label fs-2">Username:</label>
-            <input type="text" className="form-control fs-2" id="name" placeholder="Enter username" name="name" 
-                value={formData.name} onChange={(e)=>setFormData({...formData, name: e.target.value})}/>
-        </div>
+    <div className="container w-50 mt-5 register">
+        <h1 className="text-center">Login your account</h1>
+        <form className="login" onSubmit={(e)=>handleLogin(e)}>
+            <div className="form-group">
+                <label htmlFor="name" className="form-label fs-2">Username:</label>
+                <input type="text" className="form-control fs-2" id="name" placeholder="Enter username" name="name" 
+                    value={formData.name} onChange={(e)=>setFormData({...formData, name: e.target.value})}/>
+            </div>
 
-        <div className="mb-3 fs-1">
-            <label htmlFor="password" className="form-label fs-2">Password:</label>
-            <input type="password" className="form-control fs-2" id="password" placeholder="Enter password" name="password"
-                value={formData.password} onChange={(e)=>setFormData({...formData, password: e.target.value})}/>
-        </div>
-        <button type="submit" className="btn btn-primary w-100 d-block mt-4 mb-4" data-bs-toggle="modal" data-bs-target="#SigninBtn" onClick={()=>navigate("/")}>Submit</button>
-    </form>
+            <div className="form-group">
+                <label htmlFor="password" className="form-label fs-2">Password:</label>
+                <input type="password" className="form-control fs-2" id="password" placeholder="Enter your password" name="password"
+                    value={formData.password} onChange={(e)=>setFormData({...formData, password: e.target.value})}/>
+            </div>
+            
+            <div className="mt-2 mb-5">
+                <a role="button" className="nav-link fs-2 text-end" onClick={()=>navigate("/signup")}>Don't have account? Let sign up</a>
+            </div>
+            <div className="form-group d-flex justify-content-center gap-5">
+                <button type="submit" className="btn btn-primary m-1">Submit</button>
+                <button type="button" className="btn btn-danger m-1" onClick={()=>navigate("/")}>Cancel</button>
+            </div>
+        </form>
+        
+    </div>
     </>)
 }

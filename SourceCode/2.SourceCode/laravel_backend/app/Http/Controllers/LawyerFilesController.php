@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\LawyerFiles;
 use App\Models\UserTb;
+use Illuminate\Support\Facades\Storage;
 
 class LawyerFilesController extends Controller
 {
@@ -13,7 +14,12 @@ class LawyerFilesController extends Controller
      */
     public function index()
     {
-        $allLawyer = LawyerFiles::with(["UserTb", "city", "specialization", "availability"])->get();
+        $allLawyer = LawyerFiles::with(["UserTb", "city", "specialization", "availability"])->get()->map(function ($lawyer){
+            $lawyer->documentImage = $lawyer->documentImage?
+            asset('storage/' . $lawyer->documentImage)
+            :null;
+            return $lawyer;
+        });
         return $allLawyer;
     }
 
@@ -87,7 +93,7 @@ class LawyerFilesController extends Controller
     public function update(Request $request, LawyerFiles $lawyer)
     {
         $field = $request->validate([
-            'status'    => 'required|in:approve,reject',
+            'status'    => 'required|in:pending,approve,reject',
         ]);
         $lawyer->update($field);
         if($lawyer->status === 'approve'){
@@ -96,8 +102,14 @@ class LawyerFilesController extends Controller
                 $user->update(['role_id'=>3]);
             }   
         }
+        if($lawyer->status === 'reject'){
+            $user = UserTb::find($lawyer->lawyer_id);
+            if($user){
+                $user->update(['role_id'=>2]);
+            }
+        }
         $lawyer->load("UserTb");
-        return response()->json(["success"=>$lawyer],200);
+        return response()->json(["success"=>true],200);
     }
 
     /**
