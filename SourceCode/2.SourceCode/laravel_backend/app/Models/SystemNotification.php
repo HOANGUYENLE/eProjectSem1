@@ -19,7 +19,7 @@ class SystemNotification extends Model
         protected $guarded = ['id'];
 
     public function UserTb():BelongsTo{
-        return $this->belongsTo(UserTb::class);
+        return $this->belongsTo(UserTb::class, "author_ID");
     }
 
     public function toUser():BelongsToMany{

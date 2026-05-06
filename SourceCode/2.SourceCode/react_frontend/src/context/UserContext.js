@@ -20,6 +20,14 @@ export default function UserInfoProvider({children}){
         }).format(date);
     }
 
+    const formatTime2 = (timeStr)=>{
+        const date = new Date(timeStr);
+        return date.toLocaleTimeString("vi-VN", {
+            hour: "2-digit",
+            minute: "2-digit"
+        })
+    }
+
     const formatDate = (DateTimeStr)=>{
         const date = new Date(DateTimeStr);
         return date.toLocaleDateString("vi-VN", {
@@ -67,6 +75,13 @@ export default function UserInfoProvider({children}){
         setUser({ token: null, name: null, role: null })
     }
 
+    const convertToDateTimeLocal = (timeStr)=>{
+        let [date, time] = timeStr;
+        date = date.replaceAll("/", "-");
+        const [day,month,year] = date.split("-");
+        return `${year}-${month}-${day}T${time}`;
+      }
+
     const saveUserInfo = (name, role, token)=>{
         localStorage.setItem('user', JSON.stringify({
             token: token,
@@ -81,6 +96,6 @@ export default function UserInfoProvider({children}){
     }
 
     return (
-        <AuthContext.Provider value={{user, setUser, saveUserInfo, updateUserinfo, removeUserInfo, handleLogout, navigate, formatTime, formatDate}}> {children} </AuthContext.Provider>
+        <AuthContext.Provider value={{user, setUser, saveUserInfo, updateUserinfo, removeUserInfo, handleLogout, navigate, formatTime, formatDate, formatTime2, convertToDateTimeLocal}}> {children} </AuthContext.Provider>
     )
 }

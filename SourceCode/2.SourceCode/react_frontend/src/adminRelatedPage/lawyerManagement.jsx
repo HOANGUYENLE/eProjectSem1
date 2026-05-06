@@ -77,7 +77,7 @@ export default function AdminLawyerManagement(){
                 'cancel' : new Array(12).fill(0),
                 'total': []
             }
-            console.log(AppointmentData.data)
+            //console.log(AppointmentData.data)
             AppointmentData.data.AppointmentData.map((each)=>{
                 const date = new Date(each.updated_at);
                 const index = date.getMonth();

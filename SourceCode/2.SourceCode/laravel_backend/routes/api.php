@@ -40,8 +40,6 @@ Route::get("/allLawyers", [LawyerFilesController::class, 'index']);
 Route::get("/allSpecs", [SpecialzationController::class, 'index']);
 Route::get("/lawyerSchedule/{lawyer}", [AvailableSlotController::class, 'show']);
 
-
-
 Route::middleware(['auth:sanctum', 'roles:1,2,3'])->group(function(){
     Route::get('/reminder/detail/{user}', [PivotSys::class, 'show']);
     Route::get('/reminder/{user}', [PivotSys::class, 'index']);

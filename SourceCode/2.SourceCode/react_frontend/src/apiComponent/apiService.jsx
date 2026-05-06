@@ -57,3 +57,66 @@ export async function fetchAppointmentData({queryKey}){
     const res = await apiAuth.get(`/allAppointment/${year}`)
     return res.data;
 }
+
+export async function fetchFAQ(){
+    const res = await apiAuth.get("/faq");
+    return res.data;
+}
+
+export async function fetchSubmitFAQ(id, content){
+    try{
+        const res = await apiAuth.put(`/faq/${id}`, content);
+        if(res.data){
+            return true;
+        }
+    }
+    catch(err){
+        console.log(err);
+        alert(err.message);
+    }
+    return false;
+}
+
+export async function fetchDestroyFAQ(id){
+    try{
+        const res = await apiAuth.delete(`/faq/${id}`);
+        if(res.data){ return true }
+    }
+    catch(err){
+        console.log(err);
+        alert(err.message);
+    }
+    return false;
+}
+
+export async function fetchSystemNotification(){
+    const res = await apiPublic.get("/SysNotice");
+    return res.data;
+}
+
+export async function fetchUpdateSystemNotification(postID, content){
+    try{
+        const res = await apiAuth.put(`/SysNotice/${postID}`, content);
+        if(res.data){
+            //console.log(res.data)
+            alert(res.data.message);
+        }
+    }
+    catch(err){
+        console.log(err);
+        alert(err.message);
+    }
+}
+
+export async function fetchDeleteSystemNotification(postID){
+    try{
+        const res = await apiAuth.delete(`/SysNotice/${postID}`);
+        if(res.data){
+            return true;
+        }
+    }
+    catch(err){
+        alert(err.message);
+    }
+    return false;
+}

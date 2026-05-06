@@ -115,7 +115,6 @@ export default function AdminUserManagement() {
               <td>{user.phone || "—"}</td>
               <td>
                 <div className="actions justify-content-start d-flex">
-                  <button className="editBtn">Edit</button>
                   <button className="delBtn">Delete</button>
                 </div>
               </td>

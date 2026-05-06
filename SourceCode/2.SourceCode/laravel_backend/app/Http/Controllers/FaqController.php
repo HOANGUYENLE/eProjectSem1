@@ -12,7 +12,8 @@ class FaqController extends Controller
      */
     public function index()
     {
-        return FAQ::all();
+        $allFAQ = FAQ::with("UserTb")->get();
+        return $allFAQ;
     }
 
     /**
@@ -64,6 +65,7 @@ class FaqController extends Controller
 
         if($userRole === "lawyer"){
             $field = $request->validate([
+                "question" => 'required|string|max:255',
                 "answer"    => 'required|string|max:255',
                 "type"      => 'required|string|in:customer,lawyer',
                 "resolved_status" => 'required|integer|between:0,1'
@@ -78,7 +80,7 @@ class FaqController extends Controller
             $field = $request->validate([
                 "question"  => 'required|string|max:255',
                 "answer"    => 'required|string|max:255',
-                "type"      => 'required|string|in:customer, lawyer, system',
+                "type"      => 'required|string|in:customer,lawyer,system',
                 "resolved_status" => 'required|integer|between:0,1'
             ]);
 
@@ -90,7 +92,6 @@ class FaqController extends Controller
         if ($field === null){
             return ["err" => "Can not update this request"];
         }
-
         $post->update($field);
         return $post;
     }

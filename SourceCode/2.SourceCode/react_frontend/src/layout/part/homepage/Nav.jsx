@@ -14,8 +14,6 @@ import { NavLink } from "react-router-dom";
 export default function Nav(){
     const navigate = useNavigate();
     const {user, setUser, saveUserInfo, removeUserInfo, handleLogout} = useContext(AuthContext)
-    
-    console.log(user);
     return (<>
     <nav className="navbar navbar-expand-lg navbar-light bg-light p-3">
         <div className="container-fluid">

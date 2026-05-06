@@ -9,8 +9,9 @@ use Illuminate\Http\Request;
 class SystemNotificationController extends Controller
 {
     public function index()
-    {
-        return SystemNotification::all();
+    {   
+        $allNotice = SystemNotification::with("UserTb")->get();
+        return $allNotice;
     }
 
     /**
@@ -46,15 +47,19 @@ class SystemNotificationController extends Controller
      */
     public function update(Request $request, SystemNotification $systemNotification)
     {
+        
         $field = $request->validate([ 
             "title"      => ["required", "string", "max:255"],
             "content"    => ["required", "string"], 
             "status"     => ["required", "string", "in:published,expired"],
             "expired_at" => ["required", "date"],
-            "type" => ["required", "string", "in:system,reminder"]
+            "type" => ["required", "string", "in:system"]
         ]);
+        
         $systemNotification->update($field);
-        return $systemNotification;
+        return response()->json([
+            "message"=>"Update successful", 
+            "item" => $systemNotification], 200);
     }
 
     /**
@@ -63,8 +68,6 @@ class SystemNotificationController extends Controller
     public function destroy(SystemNotification $systemNotification)
     {
         $systemNotification->delete();
-        return response()->json([
-            'successes' => 'Successfull destroy a record'
-        ]);
+        return response()->json([ 'successes' => 'Successfull destroy a record']);
     }
 }

@@ -1,7 +1,7 @@
 import "../css/admin/userTable.css"
 import "../css/searchBar.css"
 import BarChart from "../chart/BarChart";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchAppointmentData } from "../apiComponent/apiService";
 import { useQueries, useQueryClient } from "@tanstack/react-query"
 import { AuthContext } from "../context/UserContext";
@@ -10,10 +10,11 @@ import { useContext } from "react";
 export default function AdminAppointment(){
     const queryClient = useQueryClient();
     const {user, navigate, formatTime, formatDate} = useContext(AuthContext);
-    let barDataset = [{label:"Peak Appointment in days" ,data: [42, 38, 55, 48, 65, 72, 68], backgroundColor: "#3B82F6", borderColor: "#2563EB", borderWidth: 1}]
     const DayLabels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     const [AppointmentType, setAppointmentType] = useState(null);
     const [Search, setSearch] = useState("");
+    const [BarData, setBarData] = useState([]);
+    let barDataset = [{label:"Peak Appointment in days", data: BarData, backgroundColor: "#3B82F6", borderColor: "#2563EB", borderWidth: 1}]
     const handleAppointmentType = (value)=>{
         setAppointmentType(value);
     }
@@ -27,13 +28,26 @@ export default function AdminAppointment(){
             }
           ]
         });
+      
     const AppointmentData = queriesResults[0];
+    useEffect(()=>{
+      if(AppointmentData?.data){
+        let dataset = new Array(7).fill(0);
+        AppointmentData.data.AppointmentData.map((each)=>{
+          const date = new Date(each.created_at);
+          let dayOfWeek = date.getDay();
+          dataset[dayOfWeek] += 1;
+        })
+        setBarData(dataset);
+      }
+    }, [AppointmentData.data])
+
     const handleLineChart = (e)=>{
         setColumnYear(e.target.value);
         queryClient.invalidateQueries(["apointmentData", columnYear]);
     }
     return(
-        <div className="ContentBodyDashboard">
+      <div className="ContentBodyDashboard">
        <h2 className="fs-1 fw-bolder">Appointment Oversight</h2>
         <div className="chartRow-2 ">
             <div className="chartCard columnChart">
