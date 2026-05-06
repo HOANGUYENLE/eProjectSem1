@@ -45,5 +45,15 @@ export async function ConfirmLawyerFile(lawyer_id, content){
         alert(err.message);
         return false
     }
-    
+}
+
+export async function fetchUserData(){
+    const res = await apiAuth.get("/allUsers");
+    return res.data;
+}
+
+export async function fetchAppointmentData({queryKey}){
+    const [keyName, year] = queryKey;
+    const res = await apiAuth.get(`/allAppointment/${year}`)
+    return res.data;
 }

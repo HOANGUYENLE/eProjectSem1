@@ -9,6 +9,7 @@ use App\Models\LawyerFiles;
 use App\Models\Rescheduled;
 use App\Models\SystemNotification;
 use App\Models\PivotNotice;
+use Illuminate\Support\Carbon;
 
 class AppointmentController extends Controller
 {
@@ -271,7 +272,7 @@ class AppointmentController extends Controller
         $AppointmentData = Appointment::where($column, $user->id)
                             ->where('status', 'pending')
                             ->get();
-        $AppointmentData->load(['lawyer', 'availability', 'UserTb']);
+        $AppointmentData->load(['lawyer', 'availability', 'UserTb', 'reschedules']);
         return $AppointmentData;
     }
 
@@ -281,5 +282,14 @@ class AppointmentController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function seeAppointmentByYear(string $year){
+        $yearsRecord = Appointment::selectRaw('DISTINCT YEAR(CREATED_AT) as year')->pluck('year');
+        $AppointmentData = Appointment::whereYear("created_at", $year)->orderBy("created_at")->get();
+        $AppointmentData->load(['lawyer.UserTb', 'availability', 'UserTb', 'reschedules.newSlot', 'reschedules.oldSlot', 'slot']);
+        return response()->json([
+            "AppointmentData"=>$AppointmentData,
+            "allYears" => $yearsRecord], 200);
     }
 }

@@ -40,6 +40,8 @@ Route::get("/allLawyers", [LawyerFilesController::class, 'index']);
 Route::get("/allSpecs", [SpecialzationController::class, 'index']);
 Route::get("/lawyerSchedule/{lawyer}", [AvailableSlotController::class, 'show']);
 
+
+
 Route::middleware(['auth:sanctum', 'roles:1,2,3'])->group(function(){
     Route::get('/reminder/detail/{user}', [PivotSys::class, 'show']);
     Route::get('/reminder/{user}', [PivotSys::class, 'index']);
@@ -67,6 +69,8 @@ Route::middleware(['auth:sanctum', 'roles:1'])->group(function(){
     Route::delete('/faq/{id}', [FaqController::class, 'destroy']);
     Route::delete('/lawyer/{lawyerID}/reviews/{reviewID}', [ReviewController::class, 'destroy']);
     Route::delete('/SysNotice/{systemNotification}', [SystemNotificationController::class, 'destroy']);
+    Route::get('/allAppointment/{year}', [AppointmentController::class, 'seeAppointmentByYear']);
+    Route::get('/allUsers', [UserTbController::class, 'index']);
 });
 
 Route::middleware(['auth:sanctum', 'roles:2'])->group(function(){

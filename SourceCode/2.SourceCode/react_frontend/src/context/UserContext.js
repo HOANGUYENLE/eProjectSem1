@@ -12,6 +12,23 @@ export default function UserInfoProvider({children}){
         token: auth.token||null
     })
 
+    const formatTime = (timeStr)=>{
+        const date = new Date(`1970-01-01T${timeStr}`);
+        return new Intl.DateTimeFormat("vi-VN", {
+            hour: "2-digit",
+            minute: "2-digit"
+        }).format(date);
+    }
+
+    const formatDate = (DateTimeStr)=>{
+        const date = new Date(DateTimeStr);
+        return date.toLocaleDateString("vi-VN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        });
+    }
+
     const handleLogout = async (e)=>{
         e.preventDefault();
         navigate("/");
@@ -64,6 +81,6 @@ export default function UserInfoProvider({children}){
     }
 
     return (
-        <AuthContext.Provider value={{user, setUser, saveUserInfo, updateUserinfo, removeUserInfo, handleLogout, navigate}}> {children} </AuthContext.Provider>
+        <AuthContext.Provider value={{user, setUser, saveUserInfo, updateUserinfo, removeUserInfo, handleLogout, navigate, formatTime, formatDate}}> {children} </AuthContext.Provider>
     )
 }

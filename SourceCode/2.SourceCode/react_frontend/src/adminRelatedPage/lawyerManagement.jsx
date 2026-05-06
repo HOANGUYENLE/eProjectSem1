@@ -8,38 +8,54 @@ import { useContext, useEffect } from "react"
 import { AuthContext } from "../context/UserContext"
 import { useQueries, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
-import { fetchLawyerData, fetchSpecData, ConfirmLawyerFile } from "../apiComponent/apiService"
+import { fetchLawyerData, fetchSpecData, ConfirmLawyerFile, fetchAppointmentData } from "../apiComponent/apiService"
 
 export default function AdminLawyerManagement(){
     const queryClient = useQueryClient();
     useEffect(()=>{window.scrollTo(0, 0)},[])
-    const {user, navigate, handleLogout} = useContext(AuthContext);
+    const {user, navigate, formatTime} = useContext(AuthContext);
     const [CityList, addCity] = useState([]);
     const [SpecsList, addSpecs] = useState([]);
     const [Status, setStatus] = useState(null);
-
     const [pieChartStatus, setPieCharStatus] = useState(null);
+    const [columnYear, setColumnYear] = useState("2025");
+    const [barChartDataSet, setDataSet] = useState({
+        'success': [],
+        'cancel' : [],
+        'total': []
+    });
+    let labels = {
+        'success': "Successful Appointment",
+        'cancel':  "Canceled Appointment",
+        'total': "Total Appointment"
+    }
 
     const queriesResults = useQueries({
       queries:[
         { queryKey: ["lawyer"],
           queryFn: fetchLawyerData,
-          refetchInterval: 1000 * 60
+          refetchInterval: 1000 * 60,
+          enabled: !!user.token
         },
         { queryKey: ["specs"],
           queryFn: fetchSpecData,
           refetchInterval: 1000 * 60
+        },
+        { queryKey: ["apointmentData", columnYear],
+          queryFn: fetchAppointmentData,
+          refetchInterval: 1000 * 60,
+          enabled: !!columnYear
         }
       ]
     });
 
     const LawyerData = queriesResults[0];
     const SpecData = queriesResults[1];
+    const AppointmentData = queriesResults[2];
 
     useEffect(()=>{
         //console.log("fetch Data: ", LawyerData.data, SpecData.data);
         if(LawyerData?.data){
-           
             const AllCities = [...new Set(LawyerData.data.map(l=>l.city.cityName))];
             addCity(prevState => [...new Set([...prevState, ...AllCities])]);
                         
@@ -55,7 +71,32 @@ export default function AdminLawyerManagement(){
             ]);
         }
 
-    }, [LawyerData.data, SpecData.data]);
+        if(AppointmentData?.data){
+            let dataSet = {
+                'success': new Array(12).fill(0),
+                'cancel' : new Array(12).fill(0),
+                'total': []
+            }
+            console.log(AppointmentData.data)
+            AppointmentData.data.AppointmentData.map((each)=>{
+                const date = new Date(each.updated_at);
+                const index = date.getMonth();
+                if (each.status === "completed"){
+                    if(each.reschedules.length > 0){
+                        each.reschedules[each.reschedules.length - 1].status === 'rescheduled'?
+                            dataSet["success"][index] += 1 : dataSet["cancel"][index] += 1
+                    }
+                    else{
+                        dataSet["success"][index] += 1
+                    } 
+                }
+                dataSet['total'][index] = (dataSet['total'][index]||0) + 1;
+            })
+            //console.log(dataSet);
+            setDataSet(dataSet);
+        }
+
+    }, [LawyerData.data, SpecData.data, AppointmentData.data]);
 
     const handleStatus = (value) => {
         setStatus({"status": value});
@@ -69,25 +110,13 @@ export default function AdminLawyerManagement(){
         }
     }
 
-    const formatTime = (timeStr)=>{
-        const date = new Date(`1970-01-01T${timeStr}`);
-        return new Intl.DateTimeFormat("vi-VN", {
-            hour: "2-digit",
-            minute: "2-digit"
-        }).format(date);
-    }
+    
 
-    let datasets = {
-        'success': [25, 30, 28, 35, 40, 38, 23, 21, 23, 28, 35, 21],
-        'cancel' : [15, 18, 22, 20, 25, 28, 30, 28, 35, 23, 21, 23],
-        'total': [48, 58, 62, 70, 75, 78, 62, 70 , 58, 62, 21, 30]
+    const handleLineChart = (e)=>{
+        setColumnYear(e.target.value);
+        queryClient.invalidateQueries(["apointmentData", columnYear]);
     }
    
-    let labels = {
-        'success': "Successful Appointment",
-        'cancel':  "Canceled Appointment",
-        'total': "Total Appointment"
-    }
     return (<>
     <div className="ContentBodyDashboard">
         <div className="chartRow-3">
@@ -99,10 +128,23 @@ export default function AdminLawyerManagement(){
                 </div>
             </div>
             <div className="chartCard lineChart">
+                {AppointmentData.isLoading? <div className="spinner-border"></div> :
+                    <div className="w-50 mt-4">
+                        <select class="form-select form-select-sm w-25 fs-4" value={columnYear} 
+                        onChange={(e)=>{
+                            handleLineChart(e);
+                        }}>
+                            {AppointmentData.data.allYears.map((each)=>(
+                                <option value={each}>{each}</option>))}
+                        </select>
+                    </div>}
+                
                 <h5 className="chartTitle">Number of appointments per month</h5>
                 <div style={{height: "200px", width:"100%" ,maxWidth: "600px"}}>
-                    <LineStackBar datasets={datasets} labels={labels}/>
+                    <LineStackBar datasets={barChartDataSet} labels={labels}/>
                 </div>
+                
+                
             </div>
         </div>
         <hr />
@@ -238,7 +280,7 @@ export default function AdminLawyerManagement(){
 
                                         <div className="mb-3">
                                             <label className="form-label">Status</label>
-                                            <select class="form-select form-control" value={!Status?value.status:Status.status} onChange={(e)=>handleStatus(e.target.value)}>
+                                            <select className="form-select form-control" value={!Status?value.status:Status.status} onChange={(e)=>handleStatus(e.target.value)}>
                                                 <option value="pending">Pending</option>
                                                 <option value="reject">Reject</option>
                                                 <option value="approve">Approve</option>
@@ -276,8 +318,6 @@ export default function AdminLawyerManagement(){
                 <button>Next</button>
             </div>
             </div>
-        }
-        
-
+        }        
     </>)
 }

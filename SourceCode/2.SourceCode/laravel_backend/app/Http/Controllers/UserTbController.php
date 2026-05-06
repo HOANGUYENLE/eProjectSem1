@@ -13,8 +13,9 @@ class UserTbController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        //
+    {   
+        $allUser = UserTb::with("role")->get();
+        return $allUser;
     }
 
     /**

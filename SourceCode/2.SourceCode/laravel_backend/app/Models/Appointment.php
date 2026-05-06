@@ -35,4 +35,7 @@ class Appointment extends Model
     public function lawyer():BelongsTo{
         return $this->belongsTo(\App\Models\LawyerFiles::class, 'lawyer_id', 'lawyer_id');
     }
+    public function slot():BelongsTo{
+        return $this->belongsTo(\App\Models\AvailabilitySlot::class, 'slot_id');
+    }
 }

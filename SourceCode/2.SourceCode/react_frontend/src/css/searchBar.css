@@ -96,9 +96,6 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 1rem;
-  position: absolute;
-  top: 150%;
-  left: 45%;
 }
 
 @media(max-width: 992px){
