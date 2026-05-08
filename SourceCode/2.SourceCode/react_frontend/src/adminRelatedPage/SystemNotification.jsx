@@ -6,7 +6,9 @@ import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../context/UserContext";
 import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
-import { fetchSystemNotification, fetchUpdateSystemNotification, fetchDeleteSystemNotification } from "../apiComponent/apiService";
+import { fetchSystemNotification, fetchUpdateSystemNotification, 
+         fetchDeleteSystemNotification, fetchCreateSystemNotification, 
+         fetchDeleteManySysNotification } from "../apiComponent/apiService";
 
 export default function SystemNotification(){
   const queryClient = useQueryClient();
@@ -87,12 +89,47 @@ export default function SystemNotification(){
     });
   }
 
-  const handleDelete = (id)=>{
+  const handleCreate = async (e) => {
+    e.preventDefault();
+
+    if (!createForm.title || createForm.title.length > 255) {
+      alert("Title is required and must be less than 255 characters.");
+      return;
+    }
+    if (!createForm.content) {
+      alert("Content is required.");
+      return;
+    }
+    if (!createForm.expired_at || new Date(createForm.expired_at) <= new Date()) {
+      alert("Expired date must be after today.");
+      return;
+    }
+
+  const success = await fetchCreateSystemNotification(createForm);
+  if (success) {
+    alert("Create new notification successfully")
+    queryClient.invalidateQueries(["SysNotification"]);
+    setCreateForm({ title: "", content: "", expired_at: "" });
+  }
+};
+
+
+  const handleDelete = async(id)=>{
     if(window.confirm(`Do you want to delete this system notification record id: ${id}?`)){
       console.log(id);
       let response = fetchDeleteSystemNotification(id);
       response && queryClient.invalidateQueries(["SysNotification"]);
     }
+  }
+
+  const handleDeleteMany = async ()=>{
+    const collectChecked = Array.from(document.querySelectorAll('input[name="delChoose"]:checked')).map(each=>each.value);
+    if(collectChecked.length === 0){
+      alert("No Items checking");
+      return;
+    }
+    const response = await fetchDeleteManySysNotification({ids: collectChecked});
+    response && queryClient.invalidateQueries(["SysNotification"]);
   }
   
   const SysNotificationData = queriesResults[0];
@@ -110,7 +147,7 @@ export default function SystemNotification(){
               <div className="SearchBar">
           <div className="SearchBar d-flex align-items-center gap-3">
             <div className="bulk-actions w-100 d-flex justify-content-start">
-                <button className="delAllBtn fs-3">Delete All</button>
+                <button className="delAllBtn fs-3" onClick={()=>handleDeleteMany()}>Delete items</button>
               </div>
               <div className="input-group" style={{ maxWidth: "250px" }}>
                   <select className="form-select" id="dropdownStatus" name="dropdownStatus">
@@ -254,60 +291,84 @@ export default function SystemNotification(){
                 </div>
               </>)
         })}
-      <div className="w-100 p-3 d-flex justify-content-center mt-2">
-        {/* Button to open modal */}
-        <button type="button" className="btn btn-primary fs-2" data-bs-toggle="modal" data-bs-target="#NoticeModal">
+
+        <div className="w-100 p-3 d-flex justify-content-center mt-2">
+          <button type="button" className="btn btn-primary fs-2" data-bs-toggle="modal" data-bs-target="#NoticeModal">
           Make a new notification
         </button>
-      </div>
-        <div className="modal fade" id="NoticeModal" tabIndex={-1} aria-hidden="true">
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title fs-1 fw-bolder">Create New Notification</h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <form id="createNotificationForm">
-                <div className="mb-3">
-                  <label htmlFor="title" className="form-label">Title</label>
-                  <input type="text" className="form-control" id="title" name="title" required maxLength="255" />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="content" className="form-label">Content</label>
-                  <textarea className="form-control" id="content" name="content" required></textarea>
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="expired_at" className="form-label">Expired At</label>
-                  <input type="datetime-local" className="form-control" id="expired_at" name="expired_at" required />
-                </div>
-              </form>
-            </div>
-            <div className="modal-footer d-flex justify-content-center">
-              <button
-                type="submit"
-                form="createNotificationForm"
-                className="btn btn-primary"
-              >
-                Confirm
-              </button>
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Cancel
-              </button>
-              
+      {}
+      <div className="modal fade" id="NoticeModal" tabIndex={-1} aria-hidden="true">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title fs-1 fw-bolder">Create New Notification</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                  onClick={()=>setCreateForm({ title: "", content: "", expired_at: "" })}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <form id="createNotificationForm" onSubmit={handleCreate}>
+                  <div className="mb-3">
+                    <label htmlFor="title" className="form-label">Title</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="title"
+                      name="title"
+                      value={createForm.title}
+                      onChange={(e)=>setCreateForm({...createForm, [e.target.name]: e.target.value})}
+                      required
+                      maxLength="255"
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="content" className="form-label">Content</label>
+                    <textarea
+                      className="form-control"
+                      id="content"
+                      name="content"
+                      value={createForm.content}
+                      onChange={(e)=>setCreateForm({...createForm, [e.target.name]: e.target.value})}
+                      required
+                    ></textarea>
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="expired_at" className="form-label">Expired At</label>
+                    <input
+                      type="datetime-local"
+                      className="form-control"
+                      id="expired_at"
+                      name="expired_at"
+                      value={createForm.expired_at}
+                      onChange={(e)=>setCreateForm({...createForm, [e.target.name]: e.target.value})}
+                      required
+                    />
+                  </div>
+                </form>
+              </div>
+              <div className="modal-footer d-flex justify-content-center">
+                <button
+                  type="submit"
+                  form="createNotificationForm"
+                  className="btn btn-primary"
+                  data-bs-dismiss="modal"
+                >
+                  Confirm
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                  onClick={()=>setCreateForm({ title: "", content: "", expired_at: "" })}>
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </div></div>
           </div>
-        );
-}
+        );}

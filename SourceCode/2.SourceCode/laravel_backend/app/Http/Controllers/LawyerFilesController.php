@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\LawyerFiles;
+use App\Models\SystemNotification;
 use App\Models\UserTb;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,7 +15,7 @@ class LawyerFilesController extends Controller
      */
     public function index()
     {
-        $allLawyer = LawyerFiles::with(["UserTb", "city", "specialization", 
+        $allLawyer = LawyerFiles::with(["UserTb", "city", "specialization", "reviews", "reviews.UserTb",
         "availability"=>function ($each){ 
             $each->orderBy("day_of_week");
         }])->get()->map(function ($lawyer){
@@ -88,6 +89,17 @@ class LawyerFilesController extends Controller
                 ];
             }),
         ], 200);
+    }
+
+    public function DetailLawyerInfo(LawyerFiles $lawyer){
+        $lawyer->load([ "UserTb", "city", 
+                        "specialization", 
+                        "reviews"=> function($each){
+                            $each->orderBy("created_at", "desc");
+                        }, "reviews.UserTb",
+                        "availability"=>function ($each){ $each->orderBy("day_of_week");}]);
+        $lawyer->documentImage = $lawyer->documentImage? asset('storage/' . $lawyer->documentImage) :null;
+        return $lawyer;
     }
 
     /**

@@ -12,6 +12,7 @@ use App\Http\Controllers\LawyerFilesController;
 use App\Http\Controllers\AvailableSlotController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\SpecialzationController;
+use App\Http\Controllers\CityController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -33,12 +34,16 @@ Route::get('/faq', [FaqController::class, 'index']);
 Route::get('/faq/{post}', [FaqController::class, 'show']);
 Route::get('/lawyer/{lawyerID}/reviews', [ReviewController::class, 'show']);
 
+Route::get('/lawyerProfile/{lawyer}', [LawyerFilesController::class, 'DetailLawyerInfo']);
+Route::get("/seeLawyer/{lawyer}", [LawyerFilesController::class, 'show']);
+
 Route::get('/SysNotice', [SystemNotificationController::class, 'index']);
 Route::get('/SysNotice/{systemNotice}', [SystemNotificationController::class, 'show']);
-Route::get("/seeLawyer/{lawyer}", [LawyerFilesController::class, 'show']);
+
 Route::get("/allLawyers", [LawyerFilesController::class, 'index']);
 Route::get("/allSpecs", [SpecialzationController::class, 'index']);
 Route::get("/lawyerSchedule/{lawyer}", [AvailableSlotController::class, 'show']);
+Route::get("/listCity", [CityController::class, "index"]);
 
 Route::middleware(['auth:sanctum', 'roles:1,2,3'])->group(function(){
     Route::get('/reminder/detail/{user}', [PivotSys::class, 'show']);
@@ -67,6 +72,7 @@ Route::middleware(['auth:sanctum', 'roles:1'])->group(function(){
     Route::delete('/faq/{id}', [FaqController::class, 'destroy']);
     Route::delete('/lawyer/{lawyerID}/reviews/{reviewID}', [ReviewController::class, 'destroy']);
     Route::delete('/SysNotice/{systemNotification}', [SystemNotificationController::class, 'destroy']);
+    Route::delete('/delSysNotices', [SystemNotificationController::class, 'destroyMany']);
     Route::get('/allAppointment/{year}', [AppointmentController::class, 'seeAppointmentByYear']);
     Route::get('/allUsers', [UserTbController::class, 'index']);
 });

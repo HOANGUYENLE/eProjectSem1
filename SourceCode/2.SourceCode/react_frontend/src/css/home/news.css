@@ -1,0 +1,65 @@
+.news {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 6px;
+  margin-top: 20px;
+}
+
+.news h3 {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.news .list-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.news .list-group-item {
+  border-bottom: 1px solid #ddd;
+  padding: 15px;
+  background: #fff;
+  border-radius: 4px;
+}
+
+.news .list-group-item:last-child {
+  border-bottom: none;
+}
+
+.news .list-group-item h5 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.news .list-group-item small {
+  display: block;
+  margin-top: 5px;
+  color: #6c757d;
+  font-size: 1.2rem;
+}
+
+.news .list-group-item p {
+  margin-top: 8px;
+  font-size: 1.5rem;
+  color: #000;
+  line-height: 1.4;
+}
+.news .load {
+  display: block;             /* block-level so margin auto works */
+  margin: 30px auto 0;        /* center horizontally, add top margin */
+  padding: 14px 28px;         /* bigger padding */
+  background: #8b5e3c;
+  color: #fff;
+  border: none;
+  border-radius: 6px;         /* slightly larger radius */
+  cursor: pointer;
+  font-size: 1.6rem;          /* bigger text */
+  font-weight: 600;           /* bold text */
+}
+
+.news .load:hover {
+  background: #6c452a;
+}

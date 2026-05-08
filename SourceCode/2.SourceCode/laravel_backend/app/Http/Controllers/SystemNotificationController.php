@@ -70,4 +70,10 @@ class SystemNotificationController extends Controller
         $systemNotification->delete();
         return response()->json([ 'successes' => 'Successfull destroy a record']);
     }
+
+    public function destroyMany(Request $request){
+        $listIDs = $request->json('ids');
+        SystemNotification::whereIn('id', $listIDs)->delete();
+        return response()->json(["success"=>true, "ids"=>$listIDs],200);
+    }
 }

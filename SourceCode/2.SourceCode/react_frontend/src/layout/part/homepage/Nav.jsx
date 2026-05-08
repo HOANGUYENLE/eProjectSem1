@@ -1,19 +1,33 @@
-import { Outlet } from "react-router-dom"
+
 import { Link } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
 import { Swiper, SwiperSlide } from "swiper/react"; 
 import { Navigation } from "swiper/modules"
-import { useContext } from "react"
-import { AuthContext } from "../../../context/UserContext"
 import Login from "../../../Auth/Login";
 import "swiper/css";
 import "swiper/css/navigation";
-import axios from "axios";
 import { NavLink } from "react-router-dom";
 
+import { Outlet } from "react-router-dom"
+import { useContext } from "react"
+import { AuthContext } from "../../../context/UserContext"
+import { useQueries} from "@tanstack/react-query"
+import { useState, useEffect } from "react"
+import { fetchCityData } from "../../../apiComponent/apiService"
+
 export default function Nav(){
-    const navigate = useNavigate();
-    const {user, setUser, saveUserInfo, removeUserInfo, handleLogout} = useContext(AuthContext)
+    const queriesResults = useQueries({
+          queries:[
+            { queryKey: ["City"],
+              queryFn: fetchCityData,
+              refetchInterval: 1000 * 60,
+            },
+          ]
+        });
+    const CityData = queriesResults[0];
+    
+    const {user, setUser, saveUserInfo, removeUserInfo, handleLogout, navigate} = useContext(AuthContext);
+    const {choosedCity, setChoosedCity} = useState(null);
     return (<>
     <nav className="navbar navbar-expand-lg navbar-light bg-light p-3">
         <div className="container-fluid">
@@ -32,47 +46,36 @@ export default function Nav(){
             <div className="collapse navbar-collapse" id="menuList">
                 <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                     <li className="nav-item"> <NavLink to="/" end className={({isActive})=>isActive?"nav-link active":"nav-link"}>Home</NavLink> </li>
-                    
-                    <li className="nav-item dropdown">
-                        <button className="nav-link btn dropdown-toggle" id="searchDropdown1" data-bs-toggle="dropdown" aria-expanded="false">
-                            Search lawyer by Specialization
-                        </button>
-                        <ul className="dropdown-menu" aria-labelledby="searchDropdown1">
-                            <li><a className="dropdown-item" href="#">All Specializations</a></li>
-                            <li><a className="dropdown-item" href="#">Family Law</a></li>
-                            <li><a className="dropdown-item" href="#">Corporate Law</a></li>
-                            <li><a className="dropdown-item" href="#">Criminal Law</a></li>
-                            <li><a className="dropdown-item" href="#">Litigation</a></li>
-                            <li><a className="dropdown-item" href="#">Securities Law</a></li>
-                        </ul>
-                    </li>
 
                     <li className="nav-item dropdown">
                         <button className="nav-link btn dropdown-toggle" id="searchDropdown2" data-bs-toggle="dropdown" aria-expanded="false">
                             Search lawyer by Location
                         </button>
                         <ul className="dropdown-menu" aria-labelledby="searchDropdown2">
-                            <li><a className="dropdown-item" href="#">All Locations</a></li>
-                            <li><a className="dropdown-item" href="#">Ho Chi Minh City</a></li>
-                            <li><a className="dropdown-item" href="#">Hà Nội</a></li>
-                            <li><a className="dropdown-item" href="#">Đà Nẵng</a></li>
-                            <li><a className="dropdown-item" href="#">Cần Thơ</a></li>
+                            {CityData.isLoading ? 
+                            <div className="spinner-border"></div>:
+                            CityData.data.map((each)=>{
+                                if(each.lawyers.length > 0){
+                                    return (<li key={each.id} className="dropdown-item">{each.cityName}</li>)
+                                }
+                            })}
                         </ul>
                     </li>
 
                     <li className="nav-item dropdown">
-                        <NavLink to="/ListOfLawyer" end className={({isActive})=>isActive?"nav-link active":"nav-link"}>View Lawyer List</NavLink>
+                        <NavLink to="/ListOfLawyer" end className={({isActive})=>isActive?"nav-link active":"nav-link" }>View Lawyer List</NavLink>
                     </li>
                     
                     <li className="nav-item">
                         <NavLink to="/faq" end className={({isActive})=>isActive?"nav-link active":"nav-link"}>FAQ/Question List</NavLink>
                     </li>
+
+                    <li className="nav-item dropdown">
+                        <NavLink to="/News" end className={({isActive})=>isActive?"nav-link active":"nav-link" }>News</NavLink>
+                    </li>
                 </ul>
-                {!user.token?<>
-                <Link to="/login" role="button" className="btn btn-primary">Signin</Link>
-                
-                </>
-                :
+                {!user.token?<><Link to="/login" role="button" className="btn btn-primary">Signin</Link>
+                </>:
                 <ul className="nav navbar-nav navbar-right">
                     {user.role !== "admin"?
                     <>

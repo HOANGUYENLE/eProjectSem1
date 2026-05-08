@@ -8,6 +8,7 @@ export async function fetchLawyerData(){
         name: lawyer.user_tb.name,
         email: lawyer.user_tb.email,
         address: lawyer.address,
+        reviews: lawyer.reviews,
         city: lawyer.city,
         image: lawyer.documentImage || null,
         specialization: Array.isArray(lawyer.specialization) && lawyer.specialization.length > 0 ? lawyer.specialization.map(spec=>{ return spec.name }):  null,
@@ -26,6 +27,11 @@ export async function fetchLawyerData(){
     return arr;
 }
 
+export async function fetchDetailLawyerData({queryKey}){
+    const [name, lawyerId] = queryKey;
+    const res = await apiPublic.get(`/lawyerProfile/${lawyerId}`);
+    return res.data;
+}
 export async function fetchSpecData(){
     const res = await apiPublic.get("/allSpecs");
     if (!res.data) {
@@ -61,6 +67,20 @@ export async function fetchAppointmentData({queryKey}){
 export async function fetchFAQ(){
     const res = await apiAuth.get("/faq");
     return res.data;
+}
+
+export async function fetchPostFAQ(content){
+    try{
+        const res = await apiAuth.post(`/faq`, content);
+        if(res.data){
+            return true;
+        }
+    }
+    catch(err){
+        console.log(err);
+        alert(err.message);
+    }
+    return false;
 }
 
 export async function fetchSubmitFAQ(id, content){
@@ -119,4 +139,59 @@ export async function fetchDeleteSystemNotification(postID){
         alert(err.message);
     }
     return false;
+}
+
+export async function fetchCreateSystemNotification(payload) {
+  try {
+    const res = await apiAuth.post("/SysNotice", payload);
+    if (res.data) {
+      return res.data;
+    }
+  } catch (err) {
+    alert(err.message);
+  }
+  return false;
+}
+
+export async function fetchDeleteManySysNotification({ids}){
+    try{
+        const res = await apiAuth.delete("/delSysNotices", {data: {ids}});
+        if (res.data){
+            console.log(res.data);
+            //alert(res.data.success);
+            return res.data
+        }
+    }
+    catch(err){
+        alert(err.message)
+    }
+    return false
+}
+
+export async function fetchCityData(){
+    try{
+        const res = await apiPublic.get("/listCity");
+        if (res.data){
+            //console.log(res.data);
+            return res.data;
+        }
+    } catch(err){
+        alert(err.message);
+        console.log(err);
+    }
+    return [];
+}
+
+export async function fetchSendReview(id, content){
+    try{
+        const res = await apiAuth.post(`/lawyer/${id}/reviews`,  content);
+        if(res.data){
+            console.log(res.data);
+            return true
+        }
+    }
+    catch(err){
+        alert(err.message);
+    }
+    return false
 }

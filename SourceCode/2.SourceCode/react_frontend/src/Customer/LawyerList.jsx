@@ -1,7 +1,23 @@
 import "../css/form.css"
-export default function LawyerList(){
-    
+import RatingStar from "../layout/part/homepage/rating"
 
+import { useContext } from "react"
+import { AuthContext } from "../context/UserContext"
+import { useQueries} from "@tanstack/react-query"
+import { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
+import { fetchLawyerData } from "../apiComponent/apiService"
+export default function LawyerList(){
+    const queriesResults = useQueries({
+        queries:[
+        { queryKey: ["lawyer"],
+            queryFn: fetchLawyerData,
+            refetchInterval: 1000 * 60,
+        },
+        ]
+    });
+    const LawyersData = queriesResults[1];
+    
 
     return (
     <div className="container py-5 lawyerfile">
@@ -13,7 +29,6 @@ export default function LawyerList(){
             <div className="d-flex align-items-center gap-3">
             <span className="text-muted fs-2">Sort by:</span>
             <select className="form-select w-auto fs-2" style={{minWidth: 180}}>
-                <option value="best">Best Match</option>
                 <option value="rating">Highest Rated</option>
                 <option value="experience">Most Experienced</option>
                 <option value="newest">Newest</option>
@@ -31,6 +46,8 @@ export default function LawyerList(){
             <div className="col-12">
             <div className="card h-100 shadow-sm border-0 overflow-hidden">
                 <div className="card-body p-4">
+
+                    
                     <div className="row align-items-center">
                         <div className="col-md-2 col-sm-3 text-center mb-3 mb-md-0">
                             <img src="https://via.placeholder.com/150" alt="Lawyer" className="rounded-circle border border-3 border-white shadow" style={{width: 130, height: 130, objectFit: 'cover'}} />
@@ -62,6 +79,7 @@ export default function LawyerList(){
                             </div>
                         </div>
                     </div>
+                    
                     <div className="row align-items-center">
                         <div className="col-md-2 col-sm-3 text-center mb-3 mb-md-0">
                             <img src="https://via.placeholder.com/150" alt="Lawyer" className="rounded-circle border border-3 border-white shadow" style={{width: 130, height: 130, objectFit: 'cover'}} />
@@ -94,6 +112,7 @@ export default function LawyerList(){
                         </div>
 
                     </div>
+
                     <div className="row align-items-center">
                         <div className="col-md-2 col-sm-3 text-center mb-3 mb-md-0">
                             <img src="https://via.placeholder.com/150" alt="Lawyer" className="rounded-circle border border-3 border-white shadow" style={{width: 130, height: 130, objectFit: 'cover'}} />

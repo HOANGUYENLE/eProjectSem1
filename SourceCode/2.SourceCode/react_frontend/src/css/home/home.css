@@ -77,19 +77,6 @@ html{
 }
 
 
-/* BUTTON */
-.btn {
-  font-size: 1.8rem;     /* larger text */
-  padding: 1rem 2.5rem;  /* more space inside */
-  border-radius: 10px;   /* rounder corners */
-  font-weight: 600;
-}
-
-.btn-lg-custom {
-  font-size: 2rem;
-  padding: 1.2rem 3rem;
-}
-
 
 /* IMAGE */
 .home .slide .col-2 img {

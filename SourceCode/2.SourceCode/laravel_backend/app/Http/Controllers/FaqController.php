@@ -12,7 +12,7 @@ class FaqController extends Controller
      */
     public function index()
     {
-        $allFAQ = FAQ::with("UserTb")->get();
+        $allFAQ = FAQ::with("UserTb")->orderBy("created_at", "desc")->get();
         return $allFAQ;
     }
 

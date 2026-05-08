@@ -3,47 +3,28 @@
     padding-top: 7rem;
 }
 
-section h4{
-    color: var(--main-color);
-    font-size: 2rem;
-    text-transform: uppercase;
-    padding-bottom: 1.5rem;
-    font-weight: 600;
-    font-family: 'Poppins', sans-serif;
-    letter-spacing: 2px;
-}
-
-section h4 i {
-    padding-right: 0.5rem;
-}
-
-section h1{
-    margin-bottom: 6rem;
-    padding-bottom: 2.5rem;
-    font-size: 4.7rem;
-    text-transform: capitalize;
-    letter-spacing: 1px;
+.arrivals h1{
+    font-size: 4rem;
     color: var(--text-color);
-    position: relative;
+    margin-bottom: 3rem;
 }
 
-
-section h1 span{
-    color: var(--main-color);
+.arrivals .arr-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
+  gap: 2rem;                             /* smaller spacing */
+  justify-content: center;               /* center the grid */
+  align-items: start;                    /* align cards at top */
+  max-width: 1200px;                     /* keeps row centered */
+  margin: 0 auto;                        /* center within page */
 }
 
-.arrivals .arr-row{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 2.5rem;
-}
-
-.arr-row .arr-col{
-    padding: 1rem;
-    box-shadow: 0 0 5px gray;
-    background: white;
-    border-radius: 10px;
-    text-align: justify;
+.arr-row .arr-col {
+  padding: 1rem;
+  box-shadow: 0 0 5px gray;
+  background: white;
+  border-radius: 10px;
+  text-align: justify;
 }
 
 .arr-row .arr-col .image{
@@ -57,7 +38,7 @@ section h1 span{
 .arr-row .arr-col .image img{
     position: relative;
     width: 100%;
-    height: 100%;
+    height: 200px;
     object-fit: cover;
     border-radius: 10px;
     cursor: pointer;
@@ -115,7 +96,7 @@ section h1 span{
 .arr-col button {
     background: var(--main-color);
     color: white;
-    padding: 1.2rem 2.6rem;   /* slightly larger padding */
+    padding: 5px 10px;   /* slightly larger padding */
     border-radius: 10px;
     cursor: pointer;
     transition: 0.5s ease;
@@ -150,13 +131,13 @@ section h1 span{
 
 @media(max-width:1350px){
     .arrivals .arr-row{
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
     }
 }
 
-@media(max-width:768px){
+@media(max-width:800px){
     .arrivals .arr-row{
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
     }
 
     .arr-row .arr-col .image{
@@ -168,8 +149,12 @@ section h1 span{
     }
 }
 
-@media(max-width:450px){
-    section h1{
+@media(max-width:510px){
+section h1{
         font-size: 2.4rem;
+    }
+
+    .arrivals .arr-row{
+        grid-template-columns: 1fr 1fr;
     }
 }

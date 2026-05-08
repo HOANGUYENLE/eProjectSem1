@@ -37,6 +37,34 @@ export default function UserInfoProvider({children}){
         });
     }
 
+    const DateDistanceCal = (timeStr)=>{
+        const mydate = new Date(timeStr);
+        const distance = Date.now() - mydate.getTime();
+
+        const seconds = Math.floor(distance / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours/24);
+        const weeks = Math.floor(days/7);
+        const months = Math.floor(weeks/4);
+        const years = Math.floor(months/12);
+        
+        if (seconds < 60) {
+            return `${seconds} second${seconds > 1 ? "s" : ""} ago`;
+        } else if (minutes < 60) {
+            return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+        } else if (hours < 24) {
+            return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+        } else if (days < 7) {
+            return `${days} day${days > 1 ? "s" : ""} ago`;
+        } else if (weeks < 4) {
+            return `${weeks} week${weeks > 1 ? "s" : ""} ago`;
+        } else if (months < 12) {
+            return `${months} month${months > 1 ? "s" : ""} ago`;
+        }
+        return `${years} year${years > 1 ? "s" : ""} ago`;
+    }
+
     const handleLogout = async (e)=>{
         e.preventDefault();
         navigate("/");
@@ -95,7 +123,27 @@ export default function UserInfoProvider({children}){
         });
     }
 
+    const RatingCal = (arrReviews) => {
+        return (
+            arrReviews.reduce((acc, currentItem)=>{
+            return acc + currentItem.rating 
+        }, 0) / arrReviews.length).toFixed(1);
+    }
+
+    const CountRating = (targetStar, arrReviews) =>{
+        let sum = (arrReviews.reduce((acc, currentItem)=>{
+            if(currentItem.rating === targetStar){
+                return acc + 1;
+            }
+            return acc;
+        }, 0));
+        return {
+            "percent": sum.toFixed(1) * 100/arrReviews.length,
+            "sum": sum
+        };
+    }
+
     return (
-        <AuthContext.Provider value={{user, setUser, saveUserInfo, updateUserinfo, removeUserInfo, handleLogout, navigate, formatTime, formatDate, formatTime2, convertToDateTimeLocal}}> {children} </AuthContext.Provider>
+        <AuthContext.Provider value={{DateDistanceCal,CountRating,RatingCal,user, setUser, saveUserInfo, updateUserinfo, removeUserInfo, handleLogout, navigate, formatTime, formatDate, formatTime2, convertToDateTimeLocal}}> {children} </AuthContext.Provider>
     )
 }

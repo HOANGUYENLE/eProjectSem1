@@ -106,7 +106,7 @@ export default function Profile(){
                                     <div className="col-12">
                                         <label className="form-label fw-semibold">Username</label>
                                         <input type="text" className="form-control" value={formData.name} 
-                                        onChange={(e)=>{setFormData({...formData, name: e.target.value})}} required/>
+                                        onChange={(e)=>{setFormData({...formData, name: e.target.value})}} required readOnly/>
                                     </div>
                                     <div className="col-md-6">
                                         <label className="form-label fw-semibold">Email</label>

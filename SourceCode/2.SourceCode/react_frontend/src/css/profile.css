@@ -19,3 +19,31 @@
 .form-control{
     font-size: 2rem;
 }
+
+.profile h5 {
+  font-weight: 600;
+  color: #333;
+}
+
+.profile .badge {
+  font-size: 0.9rem;
+  padding: 0.5em 0.75em;
+}
+
+.profile .list-group-item {
+  font-size: 1rem;
+}
+
+.profile .star i {
+  margin-right: 2px;
+}
+
+.profile .list-group-item strong {
+  font-size: 1.1rem;
+  color: #222;
+}
+
+.profile .list-group-item p {
+  font-size: 0.95rem;
+  margin-top: 0.25rem;
+}

@@ -3,6 +3,7 @@ import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import LayoutHomePage from './layout/LayoutHomePage';
 import LayoutAdmin from './layout/LayoutAdmin';
+import LawyerProfile from './layout/part/homepage/LawyerProfile';
 import AdminDashboard from './adminRelatedPage/dashboard';
 import "./chartConfig";
 import AdminLawyerManagement from './adminRelatedPage/lawyerManagement';
@@ -20,9 +21,12 @@ import AdminProtection from './protectComponent/AdminProtection';
 import LawyerList from './Customer/LawyerList';
 import Login from './Auth/Login';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import News from './Customer/News';
+
 const myClient = new QueryClient();
 
 function App() {
+  //<Route index element={<AdminDashboard/>}/>
   return (
     <QueryClientProvider client={myClient}>
       <UserInfoProvider>
@@ -34,11 +38,12 @@ function App() {
             <Route path="login" element={<Login/>}/>
             <Route path="userInfo" element={<Profile/>}/>
             <Route path="ListOfLawyer" element = {<LawyerList/>}/>
+            <Route path="lawyerProfile/:id" element = {<LawyerProfile/>}/>
+            <Route path="News" element = {<News/>}/>
           </Route>
 
           <Route path="/admin" element={<AdminProtection><LayoutAdmin/></AdminProtection>}>
-            <Route index element={<AdminDashboard/>}/>
-            <Route path="lawyerManagement" element={<AdminLawyerManagement/>}/>
+            <Route index element={<AdminLawyerManagement/>}/>
             <Route path="userManagement" element={<AdminUserManagement/>}/>
             <Route path="appointmentOversight" element={<AdminAppointment/>}/>
             <Route path="FAQManagement" element={<FAQManagement/>}/>

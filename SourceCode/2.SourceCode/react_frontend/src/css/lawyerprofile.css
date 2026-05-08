@@ -1,0 +1,138 @@
+.profile {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+/* ==================== TYPOGRAPHY ==================== */
+.profile h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.profile h4 {
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+/* ==================== SPECIALIZATIONS ==================== */
+.profile .badge {
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 14px 24px;
+  border-radius: 50px;
+  background-color: #0ea5e9;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.profile .badge:hover {
+  background-color: #0284c8;
+  transform: translateY(-2px);
+}
+
+/* ==================== WORKING HOURS ==================== */
+.profile .working-hours {
+  font-size: 1.15rem;
+}
+
+.profile .working-hours li {
+  padding: 14px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.profile .working-hours li:last-child {
+  border-bottom: none;
+}
+
+/* ==================== REVIEWS SECTION ==================== */
+
+.profile .reviews-section .card {
+  border-radius: 18px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.profile .reviews-section .card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.profile .reviews-section .fs-5 {
+  font-size: 1.18rem !important;
+  line-height: 1.65;
+}
+
+/* Star Rating */
+.profile .text-warning {
+  letter-spacing: 3px;
+}
+
+/* Buttons */
+.profile .btn {
+  padding: 14px 32px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  border-radius: 12px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .profile {
+    padding: 2rem 1rem;
+  }
+  
+  .profile h1 {
+    font-size: 2.4rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile {
+    padding: 1.5rem 1rem;
+  }
+  
+  .profile .badge {
+    padding: 10px 18px;
+    font-size: 1rem;
+  }
+}
+
+.profile .review-breakdown .progress {
+  background-color: #e2e8f0;
+  border-radius: 10px;
+}
+
+.profile .review-breakdown .progress-bar {
+  border-radius: 10px;
+}
+
+/* Make the write review banner nicer */
+.profile .bg-light {
+  background-color: #f8fafc !important;
+  border: 1px solid #e2e8f0;
+}
+
+.star-rating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+  margin-bottom: 1rem; /* add spacing */
+  overflow: hidden;    /* prevent overlap */
+}
+
+.star-rating input { display: none; }
+
+.star-rating label {
+  font-size: 5rem;
+  color: #ccc;
+  cursor: pointer;
+}
+
+/* Color stars on hover/check */
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+  color: gold;
+}

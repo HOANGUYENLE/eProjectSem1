@@ -6,7 +6,7 @@ import { useEffect } from "react";
 
 export default function(){
     const {user, navigate, handleLogout} = useContext(AuthContext);
-
+    //<li><NavLink to="/admin" className={({isActive})=>isActive?"nav-link active":"nav-link"}>DashBoard</NavLink></li>
 
     return (
         <div className="adminScreen">
@@ -16,8 +16,8 @@ export default function(){
             </div>
             <hr />
             <ul className="nav nav-pills flex-column mb-auto">
-              <li><NavLink to="/admin" end className={({isActive})=>isActive?"nav-link active":"nav-link"}>DashBoard</NavLink></li>
-              <li><NavLink to="/admin/lawyerManagement" className={({isActive})=>isActive?"nav-link active":"nav-link"}>Lawyer Management</NavLink></li>
+              
+              <li><NavLink to="/admin" end className={({isActive})=>isActive?"nav-link active":"nav-link"}>Lawyer Management</NavLink></li>
               <li><NavLink to="/admin/userManagement" className={({isActive})=>isActive?"nav-link active":"nav-link"}>User Management</NavLink></li>
               <li><NavLink to="/admin/appointmentOversight" className={({isActive})=>isActive?"nav-link active":"nav-link"}>Appointment Oversight</NavLink></li>
               <li><NavLink to="/admin/FAQManagement" className={({isActive})=>isActive?"nav-link active":"nav-link"}>FAQ Management</NavLink></li>
