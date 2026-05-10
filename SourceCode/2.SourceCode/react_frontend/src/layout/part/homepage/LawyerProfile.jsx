@@ -11,7 +11,7 @@ import RatingStar from "./rating";
 
 export default function LawyerProfile(){
     useEffect(()=>{window.scrollTo(0, 0)},[]);
-    const {user, navigate, RatingCal, CountRating, DateDistanceCal} = useContext(AuthContext);
+    const {user, navigate, RatingCal, CountRating, DateDistanceCal, calDayAhead, formatTime} = useContext(AuthContext);
     const queryClient = useQueryClient();
     const {id} = useParams();
     const [reviewForm, setReviewForm] = useState({
@@ -49,7 +49,7 @@ export default function LawyerProfile(){
 
     useEffect(()=>{
         if (Detail?.data){
-            //console.log(Detail.data);
+            console.log(Detail.data);
         }
     }, [Detail.data])
 
@@ -64,49 +64,57 @@ export default function LawyerProfile(){
             <div className="col-md-5 col-sm-8">
                 <h1 className="display-5 fw-bold mb-2">{Detail.data.user_tb.name}</h1>
                 <div className="d-flex align-items-center gap-3 mb-3">
-                    <span className="text-warning fs-1">★★★★★</span>
-                    <span className="fs-4 text-muted">5.0 • 697 reviews</span>
+                    <span className="text-warning fs-1"><RatingStar ratingStar={RatingCal(Detail.data.reviews)}/></span>
+                    <span className="fs-4 text-muted">{RatingCal(Detail.data.reviews)} • ({Detail.data?.reviews && Detail.data.reviews.length !== 0? Detail.data.reviews.length: 0}) reviews</span>
                 </div>
                 <p className="text-muted fs-5 mb-2">
-                    Licensed for 30 years • Ho Chi Minh City
+                    Licensed for {Detail.data.yearExp} years • {Detail.data.city.cityName}
                 </p>
-                <p className="text-muted fs-5">
-                    Practice Areas: Criminal Defense, Corporate Law, Family Law, DUI & DWI
-                </p>
-                <p className="fst-italic text-muted mt-4 fs-5">
-                    "Don't trust your future to a general practitioner. Call an expert today."
+                <p className="text-muted fs-4">
+                    Practice Areas: {Detail.data.specialization && Detail.data.specialization.length !== 0 ? 
+                    Detail.data.specialization.map(each=> each.name).join(", "): "This lawyer still not register their specialization"}
                 </p>
             </div>
 
             <div className="col-md-4 text-md-end mt-4 mt-md-0">
                 <div className="d-flex flex-column gap-3">
-                    <button className="btn btn-primary btn-lg py-3 fs-5">
-                    Make Appointment
+                    <button className="btn btn-primary btn-lg p-3 fs-2" onClick={()=>navigate(`/registerAppointment/${Detail.data.lawyer_id}`)}>
+                        Make Appointment
                     </button>
                 </div>
-                <small className="text-muted d-block mt-3">Call: (028) 1234-5678</small>
             </div>
         </div>
         
         <div className="row g-5 mb-5">
             <div className="col-lg-7">
                 <h4 className="fw-semibold mb-4">Specializations</h4>
+
                 <div className="d-flex flex-wrap gap-3">
-                {['Criminal Defense', 'Corporate Law', 'Family Law', 'DUI & DWI', 
-                'Personal Injury', 'Business Litigation', 'Contract Law', 'Real Estate'].map((area, i) => (
+                {Detail.data.specialization && Detail.data.specialization.length !== 0?Detail.data.specialization.map((area, i) => (
                 <span key={i} className="badge bg-primary fs-5 px-4 py-3 rounded-pill">
-                    {area}
+                    {area.name}
                 </span>
-                ))}
+                )):<span className="badge bg-primary fs-3 px-4 py-3 rounded-pi">Not available for now</span>}
                 </div>
             </div>
 
             <div className="col-lg-5">
                 <h4 className="fw-semibold mb-4">Working Hours</h4>
-                <ul className="list-unstyled working-hours fs-5">
-                    <li><strong>Monday - Friday:</strong> 08:00 AM - 06:00 PM</li>
-                    <li><strong>Saturday:</strong> 09:00 AM - 02:00 PM</li>
-                    <li><strong>Sunday:</strong> Closed</li>
+                <ul className="list-unstyled working-hours fs-3">
+                    {!Detail?.data.availability || Detail?.data.availability.length === 0?<li>This Lawyer still not register their working time</li>
+                    : (
+                    Object.entries(
+                        Detail.data.availability.reduce((acc, each) => {
+                        if (!acc[each.day_of_week]) { acc[each.day_of_week] = []; }
+                        acc[each.day_of_week].push( `${formatTime(each.start_time)}-${formatTime(each.end_time)}`);
+                        return acc;
+                        }, {})
+                        ).map(([day, times]) => (
+                            <li key={day}>
+                            <strong>{day}:</strong> {times.join(", ")}
+                            </li>
+                        ))
+                    )}
                 </ul>
             </div>
         </div></>}

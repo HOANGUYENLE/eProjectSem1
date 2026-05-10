@@ -31,6 +31,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::apiResource('reviews', ReviewController::class);
 
 Route::get('/faq', [FaqController::class, 'index']);
+Route::get('/faq/page', [FaqController::class, 'indexPage']);
 Route::get('/faq/{post}', [FaqController::class, 'show']);
 Route::get('/lawyer/{lawyerID}/reviews', [ReviewController::class, 'show']);
 
@@ -59,9 +60,11 @@ Route::middleware(['auth:sanctum', 'roles:1,3'])->group(function(){
 
 Route::middleware(['auth:sanctum', 'roles:2,3'])->group(function(){
     Route::get('/booking/seeBooking', [AppointmentController::class, 'show']);
+    Route::get('/booking/seeBooking/{appointment}', [AppointmentController::class, 'singleAppointment']);
     Route::post("/updateBooking/{status}", [AppointmentController::class, 'CUReschedule']);
     Route::get("/reminder", [AppointmentController::class, 'sendReminder']);
-    Route::post("/ReadCancel/{notification}",[AppointmentController::class, 'isReadCancel']);
+    Route::post("/ReadCancel/{notification}",[SystemNotificationController::class, 'isReadCancel']);
+    Route::get("/callReminder", [SystemNotificationController::class, 'ReminderNotification']);
 });
 
 Route::middleware(['auth:sanctum', 'roles:1'])->group(function(){

@@ -13,7 +13,7 @@ class SpecialzationController extends Controller
      */
     public function index()
     {
-        $allSpec = Specialization::with(["lawyers"])->get();
+        $allSpec = Specialization::with(["lawyers", "lawyers.UserTb"])->get();
         return $allSpec;
     }
 

@@ -9,7 +9,7 @@ export default function Login(){
     const navigate = useNavigate();
     const {user, setUser, saveUserInfo} = useContext(AuthContext);
     const [formData, setFormData] = useState({
-        "name": "",
+        "email": "",
         "password": "",
     });
     const [err, setErr] = useState({})
@@ -23,6 +23,7 @@ export default function Login(){
             let token = res.data.token;
             await saveUserInfo(name, role, token);
             if(res.data){
+                alert("Login Successfully");
                 navigate("/");
             }
         }
@@ -38,9 +39,9 @@ export default function Login(){
         <h1 className="text-center">Login your account</h1>
         <form className="login" onSubmit={(e)=>handleLogin(e)}>
             <div className="form-group">
-                <label htmlFor="name" className="form-label fs-2">Username:</label>
-                <input type="text" className="form-control fs-2" id="name" placeholder="Enter username" name="name" 
-                    value={formData.name} onChange={(e)=>setFormData({...formData, name: e.target.value})}/>
+                <label htmlFor="name" className="form-label fs-2">User Email address:</label>
+                <input type="text" className="form-control fs-2" id="name" placeholder="Enter user email address" name="email" 
+                    value={formData.email} onChange={(e)=>setFormData({...formData, email: e.target.value})}/>
             </div>
 
             <div className="form-group">

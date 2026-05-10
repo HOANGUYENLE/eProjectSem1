@@ -53,8 +53,10 @@ export async function ConfirmLawyerFile(lawyer_id, content){
     }
 }
 
-export async function fetchUserData(){
-    const res = await apiAuth.get("/allUsers");
+export async function fetchUserData(page, perPage){
+    const res = await apiAuth.get("/allUsers", {
+        params:{ page: page, per_page: perPage }
+    });
     return res.data;
 }
 
@@ -64,8 +66,57 @@ export async function fetchAppointmentData({queryKey}){
     return res.data;
 }
 
+export async function fetchRegisterAppointment(content){
+    try{
+        const res = await apiAuth.post(`/booking`, content);
+        if(res.data){
+            console.log(res.data)
+            return true;
+        }
+    }
+    catch(err){
+        console.log(err);
+        alert(err.message);
+    }
+    return false;
+}
+
+export async function fetchTakeAppointment(){
+    const res = await apiAuth.get("/booking/seeBooking");
+    return res.data;
+}
+
+
+export async function fetchSingleAppointment(AppointmentID){
+    const res = await apiAuth.get(`/booking/seeBooking/${AppointmentID}`);
+    return res.data;
+}
+
+export async function fetchRegisterReschedule(status, content = {}){
+    try{
+        const res = await apiAuth.post(`/updateBooking/${status}`, content);
+        if(res.data){
+            console.log(res.data)
+            return true;
+        }
+        return false;
+    }
+    catch(err){
+        console.log(err);
+        alert(err.message);
+    }
+    return false;
+}
+
 export async function fetchFAQ(){
     const res = await apiAuth.get("/faq");
+    return res.data;
+}
+
+export async function fetchFAQPaginate(page, perPage){
+    const res = await apiAuth.get("/faq/page", {
+        params:{ page: page, per_page: perPage }
+    });
     return res.data;
 }
 
@@ -194,4 +245,22 @@ export async function fetchSendReview(id, content){
         alert(err.message);
     }
     return false
+}
+
+export async function fetchReminder(){
+    const res = await apiAuth.get("/callReminder");
+    return res.data;
+}
+
+export async function fetchConfimRead(id){
+    try{
+        const res = await apiAuth.post(`/ReadCancel/${id}`);
+        if(res.data){
+            return res.data;
+        }
+    }
+    catch(err){
+        alert(err.message);
+    }
+    return false   
 }

@@ -22,6 +22,9 @@ import LawyerList from './Customer/LawyerList';
 import Login from './Auth/Login';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import News from './Customer/News';
+import AppointmentStatus from './appointment/AppointmentStatus';
+import Reschedule from './appointment/Reschedule';
+import AppointmentPage from './appointment/AppointmentPage';
 
 const myClient = new QueryClient();
 
@@ -37,9 +40,12 @@ function App() {
             <Route path="signup" element={<Register/>}/>
             <Route path="login" element={<Login/>}/>
             <Route path="userInfo" element={<Profile/>}/>
-            <Route path="ListOfLawyer" element = {<LawyerList/>}/>
+            <Route path="ListOfLawyer/:city?" element = {<LawyerList/>}/>
             <Route path="lawyerProfile/:id" element = {<LawyerProfile/>}/>
             <Route path="News" element = {<News/>}/>
+            <Route path="myAppointment" element={<AppointmentStatus/>}/>
+            <Route path="reschedule/:appointmentID" element={<Reschedule/>}/>
+            <Route path="registerAppointment/:lawyerID" element={<AppointmentPage/>}/>
           </Route>
 
           <Route path="/admin" element={<AdminProtection><LayoutAdmin/></AdminProtection>}>

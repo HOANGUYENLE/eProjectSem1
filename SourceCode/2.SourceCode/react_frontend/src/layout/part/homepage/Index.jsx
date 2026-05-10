@@ -109,15 +109,15 @@ export default function HomepageIndex(){
         <h1>LegalEase's Lawyers</h1>
 
         <div className="arr-row">
-            {LawyersData.isLoading? <div className="spinner-border"></div>:
-              LawyersData.data.filter(each => each.status === "approve" && each.specialization?.length > 0).slice(0,4).map((each)=>{
+            {LawyersData.isLoading && !LawyersData.isError? <div className="spinner-border"></div>:
+              LawyersData?.data.filter(each => each.status === "approve" && each.specialization?.length > 0).slice(0,4).map((each)=>{
                   return (
                     <div className="arr-col" key={each.id}>
                     <div className="image">
                       <img src={each.image} alt="image doc" />
                     </div>
                     <h5>{each.name}</h5>
-                    <div className="rating">
+                    <div className="rating justify-content-end2">
                       <RatingStar ratingStar={RatingCal(each.reviews)}/>
                       <div className="review"><span>
                         {`${RatingCal(each.reviews)}`}

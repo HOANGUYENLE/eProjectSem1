@@ -57,9 +57,14 @@
 
 .arr-row .arr-col .rating{
     display: flex;
+    flex-direction: row;
     gap: 1rem;
-    align-items: center;
+    justify-content: flex-start;
     padding-bottom: 0.5rem;
+}
+
+.justify-content-end2{
+    justify-content: flex-start !important;
 }
 
 .arr-col .rating .star i{

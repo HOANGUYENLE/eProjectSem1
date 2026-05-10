@@ -59,29 +59,7 @@ class AppointmentController extends Controller
         return response()->json(["success"=>True, "reminderList" => $arrayReminder],200);
     }
 
-    public function isReadCancel(Request $request, SystemNotification $notification){
-        $fullRead = ["1","2"];    
-        
-        $user = $request->user();
-        $title = $notification->title;
-        $parts = explode(':', $title);
-        $numbers = trim($parts[1]);
-        $myArray = explode(',', $numbers);
-        
-        if($myArray[0] === "0" && $user->role_id === 2){
-            $myArray[0] = "1";
-            $notification->update([ "title"=> "Cancel Notice: ". implode(',', $myArray)]);
-        }
-        else if($myArray[1] === "0" && $user->role_id === 3){
-            $myArray[1] = "2";
-            $notification->update([ "title"=> "Cancel Notice: ". implode(',', $myArray)]);
-        }
-        if($myArray === $fullRead){
-            $notification->update([ "status"=>"expired"]);
-            return response()->json(["success"=>"message is read by both side"], 200);
-        }
-    }
-
+    
     public function isExpired(Request $request, Appointment $appointment){
         $user = $request->user();
         if($appointment->lawyer_id !== $user->id){
@@ -118,9 +96,9 @@ class AppointmentController extends Controller
         'appointment_id' => 'required|integer|exists:appointments,id',
         'old_slot_id'    => 'required|integer|exists:availability_slots,id',
         'new_slot_id'    => 'nullable|integer|exists:availability_slots,id',
-        'reason'         => 'required|string|max:255',
+        'reason'         => 'nullable|string|max:255',
         ]);
-
+        
         //check require status
         if ($status === 'cancel'){
             $validated["status"] = "canceled";
@@ -189,10 +167,10 @@ class AppointmentController extends Controller
             $startTime = date('H:i', strtotime($availabilitySlot->start_time));
             $endTime = date('H:i', strtotime($availabilitySlot->end_time));
 
-            $content = "Your appointment with lawyer: $nameLawyer have been canceled Schedule: $nextSchedule from $startTime to $endTime";
+            $content1 = "Your appointment with lawyer: $nameLawyer have been canceled Schedule: $nextSchedule from $startTime to $endTime";
             $newNotification = SystemNotification::create([
-                'title'=>'Cancel Notice: 0,0',
-                'content' => $content,
+                'title'=>'Cancel Notice',
+                'content' => $content1,
                 'author_ID' => 17,
                 'status' => 'published',
                 'type' => 'reminder'
@@ -202,6 +180,21 @@ class AppointmentController extends Controller
                 "appointment_id" => $reschedule->appointment_id,
                 "user_id"       => $user->id
             ]);
+
+            $content2 = "Your appointment at $nextSchedule from $startTime to $endTime  have been canceled";
+            $newNotification = SystemNotification::create([
+                'title'=>'Cancel Notice',
+                'content' => $content2,
+                'author_ID' => 17,
+                'status' => 'published',
+                'type' => 'reminder'
+            ]);
+            PivotNotice::create([
+                "notification_id" => $newNotification->id,
+                "appointment_id" => $reschedule->appointment_id,
+                "user_id"       => $lawyer->UserTb->id
+            ]);
+
         }
         return response()->json([
             'success' => true,
@@ -221,20 +214,22 @@ class AppointmentController extends Controller
             'response_text' => 'nullable|string',
         ]);
 
+        
         $slot = AvailabilitySlot::find($validated['slot_id']);
-        if (! $slot || $slot->lawyer_id !== $validated['lawyer_id']) {
+        
+
+        if ($slot->lawyer_id !== (int)$validated['lawyer_id']) {
             return response()->json([
                 "err" => "You tried to book a timeslot that belongs to another lawyer"
             ], 404);
         }
-
         if ($slot->is_booked === true){
             return response()->json([
                 "err" => "This time already booked by someone else"
             ], 404);
         }
         $validated['customer_id'] = $user->id;
-        $validate['status'] = 'pending';
+        $validated['status'] = 'pending';
         $booked = Appointment::create($validated);
         $slot->update([ "is_booked" => 1 ]);
 
@@ -268,12 +263,43 @@ class AppointmentController extends Controller
      */
     public function show(Request $request){
         $user = $request->user();
-        $column = $user->role_id === 2 ? 'customer_id' : 'lawyer_id';
-        $AppointmentData = Appointment::where($column, $user->id)
-                            ->where('status', 'pending')
-                            ->get();
-        $AppointmentData->load(['lawyer', 'availability', 'UserTb', 'reschedules']);
+$column = $user->role_id === 2 ? 'customer_id' : 'lawyer_id';
+
+$AppointmentData = Appointment::with([
+        'lawyer',
+        'lawyer.UserTb',
+        'lawyer.reviews',
+        'UserTb',
+        'reschedules',
+        'slot'
+    ])
+    ->where($column, $user->id)
+    ->where('status', 'pending')
+    ->get()
+    ->map(function ($each) {
+        $each->lawyer->documentImage = $each->lawyer->documentImage
+            ? asset('storage/' . $each->lawyer->documentImage)
+            : null;
+        return $each;
+    });
         return $AppointmentData;
+    }
+
+    public function singleAppointment(Request $request, Appointment $appointment){
+        $user = $request->user();
+        if($appointment->customer_id !== $user->id && $appointment->lawyer_id !== $user->id){
+            return response()->json([
+                "err" => "This is not your appointment"
+            ], 403);
+        }
+        return $appointment->load([
+            'lawyer',
+            'lawyer.UserTb',
+            'lawyer.reviews',
+            'lawyer.availability',
+            'UserTb',
+            'slot'
+        ]);
     }
 
     /**

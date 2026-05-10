@@ -62,6 +62,12 @@ class SystemNotificationController extends Controller
             "item" => $systemNotification], 200);
     }
 
+    public function isReadCancel(SystemNotification $notification){
+    
+        $notification->update([ "status"=>"expired"]);
+        return response()->json(["success"=>"message confirmed"]);
+    }
+
     /**
      * Remove the specified resource from storage.
      */
@@ -75,5 +81,16 @@ class SystemNotificationController extends Controller
         $listIDs = $request->json('ids');
         SystemNotification::whereIn('id', $listIDs)->delete();
         return response()->json(["success"=>true, "ids"=>$listIDs],200);
+    }
+    public function ReminderNotification(Request $request){
+        $user = $request->user();
+        $allReminder = SystemNotification::with(["PivotNotice", "PivotNotice.appointment", "PivotNotice.UserTb", "UserTb"])
+        ->where('type', "reminder")
+        ->where("status", "published")
+        ->whereHas('PivotNotice', function($q) use ($user) {
+            $q->where('user_id', $user->id);
+        })
+        ->get();
+        return $allReminder;
     }
 }

@@ -49,5 +49,9 @@ class UserTb extends Authenticatable
             'notification_id'
         )->using(PivotNotice::class);
     }
+
+    public function PivotNotice():HasMany{
+        return $this->hasMany(PivotNotice::class, "user_id", "id");
+    }
 }
 

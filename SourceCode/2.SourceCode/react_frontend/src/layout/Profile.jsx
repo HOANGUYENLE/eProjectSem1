@@ -12,9 +12,9 @@ export default function Profile(){
     const {user, setUser, updateUserinfo} = useContext(AuthContext);
     const [UserData, setUserData] = useState({});
     const [err, setErr] = useState(null);
+    const [success, setSuccess] = useState(false);
     const [formData, setFormData] = useState({
         "name": "",
-        "email": "",
         "phone": "",
     });
     if(!user.token){ 
@@ -46,10 +46,16 @@ export default function Profile(){
             }})
             let role = res.data.user.role.RoleName;    
             let name = res.data.user.name;
-            updateUserinfo(name, role);
+            
             setFormData(res.data);
             queryClient.invalidateQueries(["profile", user?.token]);
-            navigate("/");
+            if(res.data){
+                updateUserinfo(name, role);
+                setSuccess(true);
+                setTimeout(() => {
+                    navigate("/"); // replace with your route
+                }, 2000);
+            }
         }
         catch (errors){
             if(errors.response){
@@ -106,12 +112,12 @@ export default function Profile(){
                                     <div className="col-12">
                                         <label className="form-label fw-semibold">Username</label>
                                         <input type="text" className="form-control" value={formData.name} 
-                                        onChange={(e)=>{setFormData({...formData, name: e.target.value})}} required readOnly/>
+                                        onChange={(e)=>{setFormData({...formData, name: e.target.value})}} required />
                                     </div>
                                     <div className="col-md-6">
                                         <label className="form-label fw-semibold">Email</label>
                                         <input type="email" className="form-control" value={formData.email} 
-                                        onChange={(e)=>{setFormData({...formData, email: e.target.value})}} required />
+                                        required readOnly/>
                                     </div>
                                     <div className="col-md-6">
                                         <label className="form-label fw-semibold">Phone</label>
@@ -122,8 +128,8 @@ export default function Profile(){
                             </div>}
                         </div>
                         <div className="d-flex justify-content-end gap-3 mt-3">
-                            <button type="button" className="btn btn-secondary px-5" onClick={()=>navigate("/")}>Cancel</button>
-                            <button type="submit" className="btn btn-primary">Save Changes</button>
+                            <button type="button" className="myCancelBtn" onClick={()=>navigate("/")}>Cancel</button>
+                            <button type="submit" className="mySubmitBtn">Save Changes</button>
                             
                         </div>
                     </form>
@@ -131,6 +137,13 @@ export default function Profile(){
                 </div>
             </div>
         </div>
+        {success && (
+            <div className="success-popup">
+            <div className="success-icon">✓</div>
+            <h2>Change profile Successfully!</h2>
+            <p>We will move back to homepage.</p>
+            </div>
+        )}
         </div>
 
         </>

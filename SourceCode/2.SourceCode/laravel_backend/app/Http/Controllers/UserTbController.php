@@ -12,9 +12,10 @@ class UserTbController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {   
-        $allUser = UserTb::with("role")->get();
+        $perPage = $request->input('per_page', 6); //6 by default
+        $allUser = UserTb::with("role")->paginate($perPage);
         return $allUser;
     }
 
@@ -45,21 +46,10 @@ class UserTbController extends Controller
         if($user->role->RoleName === "customer" || $user->role->roleName === "admin"){
             $field = $request->validate([
                 "name"  => "required|string|unique:userstb,name|max:255",
-                "email" =>"required|max:255",
-                'phone' => "min:10|nullable"
+                'phone' => "min:8|max:15|nullable"
             ]);
         }
 
-        if($user->email !== $field["email"]){
-            $findEmail = UserTb::where("email", $field["email"])->first();
-            if($findEmail){
-                return response()->json([
-                    "message"=>"Your new email already registered",
-                    "errors"=> [
-                        "email"=> ["The email already taken."]
-                    ]],403);
-            }
-        }
         if($user->name !== $field["name"]){
             $findName = UserTb::where("name", $field["name"])->first();
             if($findName){

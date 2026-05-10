@@ -22,4 +22,5 @@ class Specialization extends Model
             'specialization_id',
             'lawyer_id')->using(LawyerSpec::class);
     }
+
 }

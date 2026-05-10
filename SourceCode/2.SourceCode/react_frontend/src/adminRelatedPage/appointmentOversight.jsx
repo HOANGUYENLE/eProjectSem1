@@ -11,9 +11,13 @@ export default function AdminAppointment(){
     const queryClient = useQueryClient();
     const {user, navigate, formatTime, formatDate} = useContext(AuthContext);
     const DayLabels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    const [AppointmentType, setAppointmentType] = useState(null);
+    const [AppointmentType, setAppointmentType] = useState("default");
     const [Search, setSearch] = useState("");
     const [BarData, setBarData] = useState([]);
+    const [visibleCount, setVisibleCount] = useState(3);
+    const [rawData, setRawData] = useState(null);
+    const [displayData, setDisplayData] = useState(null);
+    
     let barDataset = [{label:"Peak Appointment in days", data: BarData, backgroundColor: "#3B82F6", borderColor: "#2563EB", borderWidth: 1}]
     const handleAppointmentType = (value)=>{
         setAppointmentType(value);
@@ -28,7 +32,7 @@ export default function AdminAppointment(){
             }
           ]
         });
-      
+
     const AppointmentData = queriesResults[0];
     useEffect(()=>{
       if(AppointmentData?.data){
@@ -39,8 +43,54 @@ export default function AdminAppointment(){
           dataset[dayOfWeek] += 1;
         })
         setBarData(dataset);
+
+        setRawData(AppointmentData.data);
+        setDisplayData(AppointmentData.data)
       }
     }, [AppointmentData.data])
+
+    useEffect(()=>{
+        setVisibleCount(3);
+        setSearch("");
+        if(AppointmentType !== "default"){ 
+          const filterData = rawData?.AppointmentData.filter(each=>{
+          let eachState = each.status === "completed"? 
+          ((each.reschedules.length > 0) ? (each.reschedules[each.reschedules.length-1].status === "rescheduled" ? "completed" : "canceled") : each.status)
+          : each.status;
+          return eachState === AppointmentType;})
+          //
+          //console.log(AppointmentData.data, filterData);
+          setDisplayData({"AppointmentData": filterData})
+        }
+        else{
+          setDisplayData(rawData);
+        }
+      },[rawData, AppointmentType])
+
+      useEffect(()=>{
+        },[Search])
+
+      const trySearch = (e)=>{
+        e.preventDefault();
+        setVisibleCount(3);
+        if(Search !== ""){ 
+            const filterData = rawData?.AppointmentData.filter(each=>{
+              const lawyerName = each.lawyer.user_tb.name;
+              const CustomerName = each.user_tb.name;
+              console.log(lawyerName, CustomerName)
+              if(lawyerName.includes(Search)){
+                return true;
+              }
+              if(CustomerName.includes(Search)){
+                return true;
+              }
+            })
+            setDisplayData({"AppointmentData": filterData})
+          }
+        else{
+          setDisplayData(AppointmentData.data);
+        }
+      }
 
     const handleLineChart = (e)=>{
         setColumnYear(e.target.value);
@@ -61,7 +111,7 @@ export default function AdminAppointment(){
         <div className="SearchBar">
         <div className="SearchBar d-flex align-items-center gap-3">
             <div className="input-group" style={{ maxWidth: "250px" }}>
-                <select className="form-select" id="dropdownCity" name="dropdownCity" value={AppointmentType || "default"} onChange={(e)=>{ handleAppointmentType(e.target.value) }}>
+                <select className="form-select" id="dropdownCity" name="dropdownCity" value={AppointmentType || "default"} onChange={(e)=>setAppointmentType(e.target.value)}>
                     <option value="default">Choose type Appointment</option>
                     <option value="pending">Pending</option>
                     <option value="completed">Completed</option>
@@ -69,7 +119,7 @@ export default function AdminAppointment(){
                 </select>
             </div>
 
-            <form method="get" className="navbar-form flex-grow-1">
+            <form method="get" className="navbar-form flex-grow-1" onSubmit={(e)=>trySearch(e)}>
                 <div className="input-group">
                 <input
                     type="text"
@@ -77,7 +127,7 @@ export default function AdminAppointment(){
                     placeholder="Search Customer or Lawyer Name"
                     value={Search} onChange={(e)=>setSearch(e.target.value)}
                 />
-                <button className="btn btn-secondary">
+                <button className="btn btn-secondary" type="submit">
                     <i className="fa fa-search"></i>
                 </button>
                 </div>
@@ -91,41 +141,9 @@ export default function AdminAppointment(){
                         <option value={each}>{each}</option>))}
                 </select>
             </div>}
-
-            <div className="dropdown">
-                <button
-                className="btn btn-outline-primary dropdown-toggle"
-                type="button"
-                id="filterDropdown"
-                data-bs-toggle="dropdown"> Filter </button>
-                <ul className="dropdown-menu p-3 mt-1 fs-2">
-                    <li>
-                        <div className="form-check">
-                        <input className="form-check-input" type="radio" name="sortOption" id="sortNameAsc" />
-                        <label className="form-check-label" htmlFor="sortName">Sort by Date(ASC)</label>
-                        </div>
-                        <div className="form-check">
-                        <input className="form-check-input" type="radio" name="sortOption" id="sortNameDesc" />
-                        <label className="form-check-label" htmlFor="sortName">Sort by Date (DESC)</label>
-                        </div>
-                    </li>
-                    <li>
-                        <div className="form-check">
-                        <input className="form-check-input" type="radio" name="sortOption" id="sortExpAsc" />
-                        <label className="form-check-label" htmlFor="sortExpAsc">Sort by Name Customers </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div className="form-check">
-                        <input className="form-check-input" type="radio" name="sortOption" id="sortExpDesc" />
-                        <label className="form-check-label" htmlFor="sortExpDesc">Sort by Name Lawyers</label>
-                        </div>
-                    </li>
-                </ul>
-            </div>
             </div>
       </div>
-        {AppointmentData.isLoading?<div className="spinner-border"></div>:
+        {AppointmentData.isLoading?<div className="spinner-border"></div>:<>
         <table className="user-table">
             <thead>
             <tr>
@@ -137,7 +155,7 @@ export default function AdminAppointment(){
             </tr>
             </thead>
              <tbody>
-                {AppointmentData.data.AppointmentData.map((each)=>(
+                {displayData?.AppointmentData.slice(0, visibleCount).map((each)=>(
                     <tr className="fs-2" key={each.id}>
                         <td>{each.user_tb.name}</td>
                         <td>{each.lawyer.user_tb.name}</td>
@@ -161,8 +179,20 @@ export default function AdminAppointment(){
                         </tr>
                 ))}
             </tbody>
-        </table>}
-
+        </table>
+          {visibleCount < displayData?.AppointmentData.length && 
+          <div className="d-flex justify-content-center w-100">
+            <button
+              className="btn btn-primary mt-3 fs-1"
+                onClick={() => setVisibleCount(visibleCount + visibleCount)}>
+              Load More
+            </button>
+            </div>
+          }
+        
+        </>}
+        
+        
         {AppointmentData?.data && AppointmentData.data.AppointmentData.map((each) => (
         <div className="modal fade" id={`scheduleModal-${each.id}`} tabIndex={-1} key={each.id}>
                 <div className="modal-dialog">
@@ -234,9 +264,6 @@ export default function AdminAppointment(){
                           <span>No reschedules yet</span>
                         )}
 </div>
-
-
-
             {/* Final status */}
             <div className="mb-3">
               <label className="form-label">Final Status</label>
@@ -276,15 +303,6 @@ export default function AdminAppointment(){
     </div>
   </div>
 ))}
-
-
-        <div className="pagination">
-            <button disabled>Previous</button>
-            <button className="active">1</button>
-            <button>2</button>
-            <button>3</button>
-            <button>Next</button>
-        </div>
         </div>
     )
 }

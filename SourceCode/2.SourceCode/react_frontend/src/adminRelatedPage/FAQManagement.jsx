@@ -5,12 +5,20 @@ import { AuthContext } from "../context/UserContext";
 import { useContext } from "react";
 import { fetchFAQ } from "../apiComponent/apiService";
 import { useQueries, useQueryClient } from "@tanstack/react-query";
-import { fetchSubmitFAQ, fetchDestroyFAQ } from "../apiComponent/apiService";
+import { fetchSubmitFAQ, fetchDestroyFAQ , fetchFAQPaginate} from "../apiComponent/apiService";
+import MyPaginate from "../Component/pagination";
 
 export default function FAQManagement(){
     const queryClient = useQueryClient();
     const {formatTime, formatDate} = useContext(AuthContext);
-    const [FAQData, SetFAQData] = useState(null);
+    const [page, setPage] = useState(1);
+    const perPage = 6;
+    
+    const [displayFaq, setDisplayFaq] = useState(null);
+
+    const [DropDownType, setDropDownType] = useState("default");
+    const [DropDownFilter, setDropDownFilter] = useState("asc");
+
     const [formData, setFormData] = useState({
         "question": "",
         "answer": "",
@@ -23,23 +31,37 @@ export default function FAQManagement(){
         "type": "",
         "resolved_status": "",
     });
+
     const [Author, setAuthor] = useState("");
     const [currentPost, setCurrentPost] = useState(null);
 
     const queriesResults = useQueries({
       queries:[
-        { queryKey: ["FAQ"],
-          queryFn: fetchFAQ,
+        { queryKey: ["FAQ", page],
+          queryFn: ()=>fetchFAQPaginate(page, perPage),
           refetchInterval: 1000 * 60,
+          keepPreviousData: true,
         },
       ]
     });
     const FAQResults = queriesResults[0];
-    useEffect(()=>{
-      if(FAQResults?.data){
-        SetFAQData(FAQResults?.data);
+    useEffect(() => {
+      if (!FAQResults?.data) return;
+
+      let temp = FAQResults.data.data;
+
+      if (DropDownType !== "default") {
+        temp = temp.filter(each => each.type === DropDownType);
       }
-    }, [FAQResults.data]);
+
+      temp = [...temp].sort((a, b) =>
+        DropDownFilter === "asc"
+          ? new Date(a.created_at) - new Date(b.created_at)
+          : new Date(b.created_at) - new Date(a.created_at)
+      );
+
+      setDisplayFaq(temp);
+    }, [DropDownType, DropDownFilter, FAQResults.data]);
 
     const handleEdit = (faq)=>{
       let temp = {
@@ -64,6 +86,7 @@ export default function FAQManagement(){
     }
 
     const handleSubmit = async () =>{
+      console.log(formData);
       if(Author !== "" && currentPost !== null){
         let response = await fetchSubmitFAQ(currentPost, formData);
         response &&  queryClient.invalidateQueries(["FAQ"]);
@@ -117,31 +140,37 @@ export default function FAQManagement(){
       <div className="faq-table">
         <h3 className="fs-1 fw-bolder">All FAQs</h3>
         <div className="SearchBar">
-          <div className="SearchBar d-flex align-items-center gap-3">
+          <div className="SearchBar d-flex align-items-end gap-3">
               <div className="input-group" style={{ maxWidth: "250px" }}>
-                  <select className="form-select" id="dropdownCity" name="dropdownCity">
-                      <option defaultValue>Choose type FAQ</option>
-                      <option value="1">Admin</option>
-                      <option value="2">Lawyer</option>
-                      <option value="3">Customer</option>
+                  <select className="form-select" id="dropdownFilter" name="dropdownFilter"
+                    onChange={e=>setDropDownType(e.target.value)}>
+                      <option value="default">Choose type FAQ</option>
+                      <option value="system">System</option>
+                      <option value="customer">Customer</option>
+                      <option value="lawyer">Lawyer</option>
                   </select>
               </div>
 
               <div className="dropdown">
                   <button
-                  className="btn btn-outline-primary dropdown-toggle"
+                  className="btn btn-outline-primary dropdown-toggle fs-3 p-3" 
                   type="button"
                   id="filterDropdown"
                   data-bs-toggle="dropdown"> Filter </button>
                   <ul className="dropdown-menu p-3 mt-1 fs-2">
                       <li>
                           <div className="form-check">
-                          <input className="form-check-input" type="radio" name="sortOption" id="sortNameAsc" />
-                          <label className="form-check-label" htmlFor="sortName">Sort by Date(ASC)</label>
+                            <input className="form-check-input" type="radio" name="sortOption" id="sortNameAsc" 
+                              value="asc" checked={DropDownFilter === "asc"}
+                              onChange={e => setDropDownFilter(e.target.value)}/>
+                              <label className="form-check-label" htmlFor="sortNameAsc">Sort by Date(ASC)</label>
                           </div>
+
                           <div className="form-check">
-                          <input className="form-check-input" type="radio" name="sortOption" id="sortNameDesc" />
-                          <label className="form-check-label" htmlFor="sortName">Sort by Date (DESC)</label>
+                            <input className="form-check-input" type="radio" name="sortOption" id="sortNameDesc" 
+                              checked={DropDownFilter === "desc"}  value="desc"
+                              onChange={e => setDropDownFilter(e.target.value)}/>
+                            <label className="form-check-label" htmlFor="sortNameDesc">Sort by Date (DESC)</label>
                           </div>
                       </li>
                   </ul>
@@ -149,6 +178,7 @@ export default function FAQManagement(){
             </div>
       </div>
        {!FAQResults.isLoading? 
+        <>
         <table>
           <thead>
             <tr>
@@ -161,7 +191,7 @@ export default function FAQManagement(){
           </thead>
           
         <tbody className="fs-3">
-          {FAQData?.map(faq => (
+          {displayFaq?.map(faq => (
             <tr key={faq.id}>
               <td>{faq.id}</td>
               <td>{faq.question}</td>
@@ -183,6 +213,8 @@ export default function FAQManagement(){
           ))}
         </tbody>
         </table>
+        <MyPaginate page={page} setPage={setPage} lastPage={FAQResults.data.last_page}/>
+        </>
        : <div className="spinner-border"></div>}
       </div>
     </div>

@@ -1,0 +1,213 @@
+
+/* PAGE */
+.appointmentRes .pending-wrapper{
+  min-height:100vh;
+  padding:50px 30px;
+}
+
+/* HEADER */
+.appointmentRes .pending-header{
+  text-align:start;
+  margin-bottom:45px;
+  margin-left: 3rem;
+}
+
+.appointmentRes .pending-icon{
+  width:90px;height:90px;margin:0 auto 20px;
+  border-radius:50%;
+  background:#2563ff;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:42px;
+  box-shadow:0 15px 35px rgba(37,99,255,.18);
+}
+
+.appointmentRes .pending-header h1{font-size:38px;font-weight:700;color:#111;margin-bottom:10px}
+.appointmentRes .pending-header p{color:#64748b;font-size:16px}
+
+/* GRID */
+.appointmentRes .lawyer-grid{
+  max-width:1450px;margin:auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:25px;
+}
+
+/* LAWYER CARD */
+.appointmentRes .lawyer-card{
+  background:#fff;border-radius:28px;padding:30px;text-align:center;
+  border:1px solid #edf2f7;
+  box-shadow:0 12px 35px rgba(15,23,42,.06);
+  transition:.25s;
+}
+
+.appointmentRes .lawyer-card:hover{transform:translateY(-6px)}
+
+.appointmentRes .lawyer-top{position:relative;margin-bottom:18px}
+
+.appointmentRes .lawyer-top img{
+  width:110px;height:110px;border-radius:50%;
+  object-fit:cover;border:5px solid #eff6ff;
+}
+
+.appointmentRes .lawyer-status{
+  position:absolute;right:20px;top:10px;
+  padding:8px 14px;border-radius:999px;
+  background:#fee2e2;color:#dc2626;
+  font-size:12px;font-weight:700;
+}
+
+.appointmentRes .lawyer-status.online{background:#dcfce7;color:#16a34a}
+
+.appointmentRes .lawyer-card h3{font-size:24px;font-weight:700;color:#111;margin-bottom:8px}
+.appointmentRes .lawyer-card span{color:#64748b;font-size:15px}
+
+/* INFO */
+.appointmentRes .lawyer-info{
+  display:flex;justify-content:space-between;
+  margin:28px 0;
+}
+
+.appointmentRes .lawyer-info strong{font-size:20px;color:#111}
+.appointmentRes .lawyer-info p{margin-top:5px;color:#64748b;font-size:14px}
+
+/* BUTTON */
+.appointmentRes .lawyer-card button{
+  width:100%;height:55px;
+  border:none;border-radius:18px;
+  background:#2563ff;color:#fff;
+  font-size:15px;font-weight:600;
+  cursor:pointer;
+  box-shadow:0 10px 25px rgba(37,99,255,.18);
+  transition:.25s;
+}
+
+.appointmentRes .lawyer-card button:hover{
+  background:#1d4ed8;transform:translateY(-2px);
+}
+
+/* MAIN CARD */
+.appointmentRes .pending-main-card{
+  max-width:1450px;margin:45px auto 0;
+  background:#fff;border-radius:30px;
+  padding:45px;
+  border:1px solid #edf2f7;
+  box-shadow:0 12px 35px rgba(15,23,42,.06);
+  position:relative;
+}
+
+/* HIDE BUTTON */
+.appointmentRes .hide-btn{
+  position:absolute;top:25px;right:25px;
+  width:45px;height:45px;
+  border:none;border-radius:14px;
+  background:#eff6ff;color:#2563ff;
+  font-size:18px;
+  cursor:pointer;
+  transition:.25s;
+}
+
+.appointmentRes .hide-btn:hover{background:#2563ff;color:#fff;transform:rotate(90deg)}
+
+/* TITLE */
+.appointmentRes .card-title{
+  display:flex;align-items:center;gap:15px;
+  margin-bottom:35px;
+}
+
+.appointmentRes .title-icon{
+  width:55px;height:55px;border-radius:18px;
+  background:#eff6ff;color:#2563ff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+}
+
+.appointmentRes .card-title h2{font-size:30px;font-weight:700;color:#111}
+
+/* DETAIL */
+.appointmentRes .detail-item{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:22px 0;
+  border-bottom:1px solid #eef2f7;
+}
+
+.appointmentRes .detail-left{
+  display:flex;align-items:center;gap:12px;
+  color:#64748b;font-size:16px;
+}
+
+.appointmentRes .detail-left svg{color:#2563ff}
+
+.appointmentRes .detail-item strong{font-size:17px;color:#111}
+
+.appointmentRes .detail-item.content{
+  flex-direction:column;align-items:flex-start;gap:15px;
+}
+
+.appointmentRes .detail-item.content p{
+  color:#475569;font-size:15px;line-height:1.8;
+}
+
+/* RESCHEDULE */
+.appointmentRes .reschedule-box{
+  margin-top:35px;
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  border-radius:24px;
+  padding:25px;
+  display:flex;justify-content:space-between;align-items:center;
+  gap:20px;
+}
+
+.appointmentRes .res-left{display:flex;align-items:flex-start;gap:18px}
+.appointmentRes .res-left svg{font-size:24px;color:#2563ff}
+
+.appointmentRes .res-left h3{font-size:20px;color:#111;margin-bottom:8px}
+.appointmentRes .res-left p{color:#64748b;line-height:1.7}
+
+.appointmentRes .reschedule-box .confirm{
+  height:55px;padding:0 28px;
+  border:none;border-radius:18px;
+  background:#2563ff;color:#fff;
+  font-size:15px;font-weight:600;
+  display:flex;align-items:center;gap:10px;
+  cursor:pointer;
+  box-shadow:0 10px 25px rgba(37,99,255,.18);
+  transition:.25s;
+}
+
+.appointmentRes .reschedule-box .cancel{
+  height:55px;padding:0 28px;
+  border:none;border-radius:18px;
+  background: crimson;color:#fff;
+  
+  font-size:15px;font-weight:600;
+  display:flex;align-items:center;gap:10px;
+  cursor:pointer;
+  box-shadow:0 10px 25px rgba(37,99,255,.18);
+  transition:.25s;
+}
+
+.appointmentRes .reschedule-box .confirm:hover{
+  background:#1d4ed8;transform:translateY(-2px);
+}
+
+.appointmentRes .reschedule-box .cancel:hover{
+  background:crimson;transform:translateY(-2px);
+}
+
+.appointmentRes .reschedule-box .cancelLink{
+    text-decoration: none;
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .appointmentRes .reschedule-box{flex-direction:column;align-items:flex-start}
+}
+
+@media(max-width:768px){
+  .appointmentRes .pending-wrapper{padding:25px 15px}
+  .appointmentRes .pending-header h1{font-size:28px}
+  .appointmentRes .pending-main-card{padding:30px 20px}
+  .appointmentRes .detail-item{flex-direction:column;align-items:flex-start;gap:12px}
+  .appointmentRes .card-title h2{font-size:24px}
+}

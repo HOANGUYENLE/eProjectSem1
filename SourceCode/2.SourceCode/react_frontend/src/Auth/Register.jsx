@@ -10,6 +10,7 @@ import "../css/signup.css"
 export default function Register(){
     const navigate = useNavigate();
     const {user, setUser, saveUserInfo} = useContext(AuthContext);
+    const [success, setSuccess] = useState(false);
     const [formData, setFormData] = useState({
         "name": "",
         "email": "",
@@ -25,9 +26,12 @@ export default function Register(){
             let role = res.data.user.role.RoleName;    
             let name = res.data.user.name;
             let token = res.data.token;
-            saveUserInfo(name, role, token);
             if(res.data){
-                navigate("/");
+              saveUserInfo(name, role, token);
+              setSuccess(true);
+              setTimeout(() => {
+                  navigate("/"); // replace with your route
+              }, 2000);
             }
         }
         catch (errors) {
@@ -147,10 +151,17 @@ export default function Register(){
     </div>
     {/* Buttons */}
     <div className="d-flex justify-content-center gap-3 mt-4">
-      <button type="submit" className="btn btn-primary">Submit</button>
-      <button type="button" className="btn btn-danger" onClick={()=>navigate("/")}>Cancel</button>
+      <button type="submit" className="mySubmitBtn fs-2">Submit</button>
+      <button type="button" className="myCancelBtn fs-2" onClick={()=>navigate("/")}>Cancel</button>
     </div>
   </form>
+  {success && (
+      <div className="success-popup">
+      <div className="success-icon">✓</div>
+      <h2>Register Successfully!</h2>
+      <p>We will move back to homepage.</p>
+      </div>
+  )}
 </div>
 
 )}

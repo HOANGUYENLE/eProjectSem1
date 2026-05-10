@@ -37,6 +37,39 @@ export default function UserInfoProvider({children}){
         });
     }
 
+    const calDayAhead = (dayofWeek, fromDate = null)=>{
+        const weekDayMap = {
+            Sun: 0,
+            Mon: 1,
+            Tue: 2,
+            Wed: 3,
+            Thu: 4,
+            Fri: 5,
+            Sat: 6
+        };
+
+        let today;
+
+        if(fromDate === null){ 
+            today = new Date();
+        }
+        else{ 
+            today = new Date(fromDate); 
+        }
+        const currentDayOfWeek = today.getDay();
+        let dayAhead = (weekDayMap[dayofWeek] - currentDayOfWeek + 7) % 7;
+        if(dayAhead === 0){ dayAhead = 7; }
+        const nextDay = new Date(today);
+        nextDay.setDate(today.getDate() + dayAhead);
+        return nextDay.toLocaleDateString("en-US",{
+            weekday: "long",
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        });
+    }
+
+
     const DateDistanceCal = (timeStr)=>{
         const mydate = new Date(timeStr);
         const distance = Date.now() - mydate.getTime();
@@ -124,6 +157,7 @@ export default function UserInfoProvider({children}){
     }
 
     const RatingCal = (arrReviews) => {
+        if (!arrReviews || arrReviews.length === 0) return 0;
         return (
             arrReviews.reduce((acc, currentItem)=>{
             return acc + currentItem.rating 
@@ -144,6 +178,6 @@ export default function UserInfoProvider({children}){
     }
 
     return (
-        <AuthContext.Provider value={{DateDistanceCal,CountRating,RatingCal,user, setUser, saveUserInfo, updateUserinfo, removeUserInfo, handleLogout, navigate, formatTime, formatDate, formatTime2, convertToDateTimeLocal}}> {children} </AuthContext.Provider>
+        <AuthContext.Provider value={{DateDistanceCal,CountRating,RatingCal,calDayAhead,user, setUser, saveUserInfo, updateUserinfo, removeUserInfo, handleLogout, navigate, formatTime, formatDate, formatTime2, convertToDateTimeLocal}}> {children} </AuthContext.Provider>
     )
 }

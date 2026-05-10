@@ -14,6 +14,13 @@ export default function AdminLawyerManagement(){
     const queryClient = useQueryClient();
     useEffect(()=>{window.scrollTo(0, 0)},[])
     const {user, navigate, formatTime} = useContext(AuthContext);
+
+    const [chooseSpecs, setChooseSpecs] = useState("all");
+    const [chooseCity, setChooseCity] = useState("all");
+    const [DropDownFilter, setDropDownFilter] = useState("NameAsc");
+    const [DisplayData, setDisplayData] = useState(null);
+    const [search, setSearch] = useState("");
+
     const [CityList, addCity] = useState([]);
     const [SpecsList, addSpecs] = useState([]);
     const [Status, setStatus] = useState(null);
@@ -55,22 +62,6 @@ export default function AdminLawyerManagement(){
 
     useEffect(()=>{
         //console.log("fetch Data: ", LawyerData.data, SpecData.data);
-        if(LawyerData?.data){
-            const AllCities = [...new Set(LawyerData.data.map(l=>l.city.cityName))];
-            addCity(prevState => [...new Set([...prevState, ...AllCities])]);
-                        
-            const countingStatus = LawyerData.data.reduce((initStat, each)=>{
-                initStat[each.status] = (initStat[each.status] || 0) + 1
-                return initStat;
-            }, {});
-
-            setPieCharStatus([
-                countingStatus.approve || 0,
-                countingStatus.pending || 0,
-                countingStatus.reject || 0,
-            ]);
-        }
-
         if(AppointmentData?.data){
             let dataSet = {
                 'success': new Array(12).fill(0),
@@ -98,6 +89,72 @@ export default function AdminLawyerManagement(){
 
     }, [LawyerData.data, SpecData.data, AppointmentData.data]);
 
+    useEffect(()=>{
+        if(!LawyerData?.data) return;
+
+        if(LawyerData?.data){
+            const AllCities = [...new Set(LawyerData.data.map(l=>l.city.cityName))];
+            addCity(prevState => [...new Set([...prevState, ...AllCities])]);
+                        
+            const countingStatus = LawyerData.data.reduce((initStat, each)=>{
+                initStat[each.status] = (initStat[each.status] || 0) + 1
+                return initStat;
+            }, {});
+
+            setPieCharStatus([
+                countingStatus.approve || 0,
+                countingStatus.pending || 0,
+                countingStatus.reject || 0,
+            ]);
+        }
+
+        let temp = LawyerData.data;
+
+        if(search !== ""){
+           temp = temp.filter(each=>{
+                if(each.name.toLowerCase().includes(search.toLowerCase())){
+                    return true;
+                }
+            }) 
+        }
+
+        if(chooseSpecs !== "all"){
+            temp = temp.filter(each=>{
+                if(!each.specialization){ return false; }
+                if(each.specialization.includes(chooseSpecs)){
+                    return true;
+                }
+            })
+        }
+
+        if(chooseCity !== "all"){
+           temp = temp.filter(each=>{
+                if(each.city){
+                    return each.city.cityName === chooseCity;
+                }
+            }) 
+        }
+
+        if(DropDownFilter === "NameAsc"){
+            temp = temp.sort((a, b)=>a.name.localeCompare(b.name))
+        }
+        else if(DropDownFilter === "NameDesc"){
+            temp = temp.sort((a, b)=>b.name.localeCompare(a.name))
+        }
+        else if(DropDownFilter === "YearAsc"){
+            temp = temp.sort((a,b)=>{return a.years - b.years})
+        }
+        else if(DropDownFilter === "YearDesc"){
+            temp = temp.sort((a,b)=>{return b.years - a.years})
+        }
+
+        setDisplayData(temp);
+
+        //console.log(chooseSpecs);
+        //console.log(chooseCity);
+        //console.log(DropDownFilter);
+    }, [chooseSpecs, chooseCity, DropDownFilter, LawyerData.data, search])
+
     const handleStatus = (value) => {
         setStatus({"status": value});
     }
@@ -109,8 +166,6 @@ export default function AdminLawyerManagement(){
             queryClient.invalidateQueries(["lawyer"]);
         }
     }
-
-    
 
     const handleLineChart = (e)=>{
         setColumnYear(e.target.value);
@@ -130,12 +185,12 @@ export default function AdminLawyerManagement(){
             <div className="chartCard lineChart">
                 {AppointmentData.isLoading? <div className="spinner-border"></div> :
                     <div className="w-50 mt-4">
-                        <select class="form-select form-select-sm w-25 fs-4" value={columnYear} 
+                        <select className="form-select form-select-sm w-25 fs-4" value={columnYear} 
                         onChange={(e)=>{
                             handleLineChart(e);
                         }}>
-                            {AppointmentData.data.allYears.map((each)=>(
-                                <option value={each}>{each}</option>))}
+                            {AppointmentData.data.allYears.map((each, index)=>(
+                                <option key={index} value={each}>{each}</option>))}
                         </select>
                     </div>}
                 
@@ -149,60 +204,76 @@ export default function AdminLawyerManagement(){
         </div>
         <hr />
 
-        <div className="SearchBar d-flex align-items-center gap-3">
-            <form method="get" className="navbar-form flex-grow-1">
+        <div className="SearchBar d-flex align-items-end gap-3">
+            <form method="get" className="navbar-form flex-grow-1" >
                 <div className="input-group">
                 <input
                     type="text"
-                    className="form-control"
+                    className="form-control fs-3 p-3"
                     placeholder="Search Lawyer by Name"
+                    value={search}
+                    onChange={(e)=>setSearch(e.target.value)}
                 />
-                <button className="btn btn-secondary">
+                <button className="btn btn-secondary" type="button">
                     <i className="fa fa-search"></i>
                 </button>
                 </div>
             </form>
 
             <div className="input-group" style={{ maxWidth: "200px" }}>
-                <select className="form-select" id="dropdownCity" name="dropdownCity">
-                    <option defaultValue>Choose City...</option>
-                    {CityList.map((value, index) => (<option>{value}</option> ))}
+                <select className="form-select" id="dropdownCity" 
+                name="dropdownCity" onChange={e=>setChooseCity(e.target.value)}>
+                    <option value="all">Choose City...</option>
+                    {CityList.map((value, index) => (<option key={index} value={value}>{value}</option> ))}
                 </select>
             </div>
 
             <div className="input-group" style={{ maxWidth: "220px" }}>
-                <select className="form-select" id="dropdownSpecialization" name="dropdownSpecialization">
-                    <option defaultValue>Choose Specialization...</option>
-                    {SpecData?.data && SpecData.data.map((value, index) => (<option key={value.id} value={value.id}>{value.name}</option> )) }
+                <select className="form-select" id="dropdownSpecialization" 
+                    name="dropdownSpecialization" onChange={e=>setChooseSpecs(e.target.value)}>
+                    <option value="all">Choose Specialization...</option>
+                    {SpecData?.data && SpecData.data.map((value, index) => (<option key={value.id} value={value.name}>{value.name}</option> )) }
                 </select>
             </div>
 
             <div className="dropdown">
                 <button
-                className="btn btn-outline-primary dropdown-toggle"
+                className="btn btn-outline-primary dropdown-toggle fs-3 p-3"
                 type="button"
                 id="filterDropdown"
                 data-bs-toggle="dropdown"> Filter </button>
                 <ul className="dropdown-menu p-3 mt-1 fs-3">
                     <li>
                         <div className="form-check">
-                        <input className="form-check-input" type="radio" name="sortOption" id="sortNameAsc" />
+                        <input className="form-check-input" type="radio" name="sortOption" id="sortNameAsc" 
+                        checked={DropDownFilter === "NameAsc"} 
+                        onChange={e=>setDropDownFilter(e.target.value)}
+                        value="NameAsc"/>
                         <label className="form-check-label" htmlFor="sortName">Sort by Name (ASC)</label>
                         </div>
                         <div className="form-check">
-                        <input className="form-check-input" type="radio" name="sortOption" id="sortNameDesc" />
+                        <input className="form-check-input" type="radio" name="sortOption" id="sortNameDesc"
+                        checked={DropDownFilter === "NameDesc"} 
+                        onChange={e=>setDropDownFilter(e.target.value)}
+                        value="NameDesc"/>
                         <label className="form-check-label" htmlFor="sortName">Sort by Name (DESC)</label>
                         </div>
                     </li>
                     <li>
                         <div className="form-check">
-                        <input className="form-check-input" type="radio" name="sortOption" id="sortExpAsc" />
+                        <input className="form-check-input" type="radio" name="sortOption" id="sortExpAsc" 
+                        checked={DropDownFilter === "YearAsc"} 
+                        onChange={e=>setDropDownFilter(e.target.value)}
+                        value="YearAsc"/>
                         <label className="form-check-label" htmlFor="sortExpAsc">Sort by Experience (ASC)</label>
                         </div>
                     </li>
                     <li>
                         <div className="form-check">
-                        <input className="form-check-input" type="radio" name="sortOption" id="sortExpDesc" />
+                        <input className="form-check-input" type="radio" name="sortOption" id="sortExpDesc" 
+                        checked={DropDownFilter === "YearDesc"} 
+                        onChange={e=>setDropDownFilter(e.target.value)}
+                        value="YearDesc"/>
                         <label className="form-check-label" htmlFor="sortExpDesc">Sort by Experience (DESC)</label>
                         </div>
                     </li>
@@ -217,6 +288,7 @@ export default function AdminLawyerManagement(){
                 <tr >
                     <th>Lawyer Name</th>
                     <th>Address</th>
+                    <th>Years experience</th>
                     <th>City</th>
                     <th>Profile Image</th>
                     <th>Status</th>
@@ -224,16 +296,17 @@ export default function AdminLawyerManagement(){
                 </tr>
                 </thead>
                 <tbody>
-                    {LawyerData.data.map((value, index)=>{
+                    {DisplayData?.map((value, index)=>{
                     return(
                         <tr key={value.id}>
                             <td>{value.name}</td>
                             <td>{value.address}</td>
+                            <td>{value.years}</td>
                             <td>{value.city.cityName}</td>
                             <td><a href={value.image} target="_blank" rel="noopener noreferrer">View image</a></td>
                             <td><span className={value.status === "approve"?"status approved fs-3":value.status === "pending"?"status pending fs-3":"status rejected fs-3"}>{value.status}</span></td>
                             <td><div className="actions d-flex justify-content-start">
-                                <button type="button" className="btn btn-info p-3" data-bs-toggle="modal" data-bs-target={`#lawyerModal-${value.id}`} onClick={()=>handleStatus(value.status)}>See Detail info</button>
+                                <button type="button" className="btn btn-info p-3 fs-3" data-bs-toggle="modal" data-bs-target={`#lawyerModal-${value.id}`} onClick={()=>handleStatus(value.status)}>See Detail info</button>
                             </div></td>
                         </tr>)})}
                 </tbody>
@@ -242,7 +315,7 @@ export default function AdminLawyerManagement(){
             {LawyerData?.data && LawyerData.data.map((value, index)=>{
                 return (
                     <>
-                    <div className="modal fade" id={`lawyerModal-${value.id}`} tabIndex={-1}>
+                    <div className="modal fade" id={`lawyerModal-${value.id}`} key={value.id} tabIndex={-1}>
                         <div className="modal-dialog">
                             <div className="modal-content">
                                 <div className="modal-header">
@@ -300,8 +373,8 @@ export default function AdminLawyerManagement(){
                                     </form>
                                 </div>
                                 <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={(e)=>approveLawyer(value.id ,Status)}>Save changes</button>
+                                <button type="button" className="btn btn-secondary fs-2" data-bs-dismiss="modal">Close</button>
+                                <button type="button" className="btn btn-info fs-2" data-bs-dismiss="modal" onClick={(e)=>approveLawyer(value.id ,Status)}>Save changes</button>
                                 </div>
                             </div>
                             </div>
@@ -309,14 +382,6 @@ export default function AdminLawyerManagement(){
                     </>
                 )
             })}
-            {/* Pagination */}
-            <div className="pagination mt-5">
-                <button disabled>Previous</button>
-                <button className="active">1</button>
-                <button>2</button>
-                <button>3</button>
-                <button>Next</button>
-            </div>
             </div>
         }        
     </>)

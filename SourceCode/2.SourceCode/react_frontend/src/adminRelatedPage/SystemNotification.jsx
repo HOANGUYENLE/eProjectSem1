@@ -12,9 +12,12 @@ import { fetchSystemNotification, fetchUpdateSystemNotification,
 
 export default function SystemNotification(){
   const queryClient = useQueryClient();
-  const [currentStatus, setStatus] = useState(null);
+
+  const [currentStatus, setStatus] = useState("default");
+  const [currentType, setType] = useState("all");
+  const [DropDownFilter, setDropDownFilter] = useState("asc");
+  const [displayData, setDisplayData] = useState(null);
   const {user, navigate, formatTime2, formatDate, convertToDateTimeLocal} = useContext(AuthContext);
-  const [currentType, setType] = useState(null);
   const [currentPostID, setPostID] = useState(null);
   const [formData, setFormData] = useState({
     "title": "",
@@ -58,6 +61,11 @@ export default function SystemNotification(){
   })
 
   const handleSummit = (each)=>{
+    if(each.type === "reminder"){
+      alert("You can only Edit system type notification");
+      return;
+    }
+
     const content = {
       "title": formData["title"] === "" ? each.title: formData["title"],
       "content": formData["content"] === "" ? each.content: formData["content"],
@@ -113,7 +121,6 @@ export default function SystemNotification(){
   }
 };
 
-
   const handleDelete = async(id)=>{
     if(window.confirm(`Do you want to delete this system notification record id: ${id}?`)){
       console.log(id);
@@ -134,32 +141,52 @@ export default function SystemNotification(){
   
   const SysNotificationData = queriesResults[0];
   
-  useEffect(()=>{
-    if(SysNotificationData?.data){
-      //console.log(SysNotificationData.data);
+  
+
+
+  useEffect(() => {
+    if (!SysNotificationData?.data) return;
+
+    let temp = SysNotificationData.data;
+    if(currentType !== "all"){
+      temp = temp.filter(each => each.type === currentType);
     }
-  }, [SysNotificationData]);
+
+    if (currentStatus !== "default"){
+      temp = temp.filter(each => each.status === currentStatus);
+    }
+
+    temp = [...temp].sort((a, b) =>
+      DropDownFilter === "asc"
+        ? new Date(a.created_at) - new Date(b.created_at)
+        : new Date(b.created_at) - new Date(a.created_at)
+    );
+
+    setDisplayData(temp)
+    }, [currentType, DropDownFilter, currentStatus, SysNotificationData.data]);
 
 
   return (
     <div className="ContentBodyDashboard">
       <h2>Content Management</h2>
               <div className="SearchBar">
-          <div className="SearchBar d-flex align-items-center gap-3">
+          <div className="SearchBar d-flex align-items-end gap-3">
             <div className="bulk-actions w-100 d-flex justify-content-start">
-                <button className="delAllBtn fs-3" onClick={()=>handleDeleteMany()}>Delete items</button>
+                <button className="delAllBtn fs-3 p-3" onClick={()=>handleDeleteMany()}>Delete items</button>
               </div>
               <div className="input-group" style={{ maxWidth: "250px" }}>
-                  <select className="form-select" id="dropdownStatus" name="dropdownStatus">
-                      <option defaultValue>Choose Status</option>
+                  <select className="form-select" id="dropdownStatus" name="dropdownStatus"
+                  onChange={e=>setStatus(e.target.value)}>
+                      <option value="default">Choose Status</option>
                       <option value="published">Published</option>
                       <option value="expired">Expired</option>
                   </select>
               </div>
 
               <div className="input-group" style={{ maxWidth: "250px" }}>
-                  <select className="form-select" id="dropdownType" name="dropdownType">
-                      <option defaultValue>Choose Type</option>
+                  <select className="form-select" id="dropdownType" name="dropdownType" 
+                  onChange={e=>setType(e.target.value)}>
+                      <option value="all">Choose Type</option>
                       <option value="system">System</option>
                       <option value="reminder">Reminder</option>
                   </select>
@@ -167,21 +194,25 @@ export default function SystemNotification(){
 
               <div className="dropdown">
                   <button
-                  className="btn btn-outline-primary dropdown-toggle"
+                  className="btn btn-outline-primary dropdown-toggle fs-3 p-3"
                   type="button"
                   id="filterDropdown"
                   data-bs-toggle="dropdown"> Filter </button>
-                  <ul className="dropdown-menu p-3 mt-1 fs-3">
+                  <ul className="dropdown-menu p-3 mt-1 fs-3 ">
                       <li>
                           <div className="form-check">
-                          <input className="form-check-input" type="radio" name="sortOption" id="sortExpAsc" />
-                          <label className="form-check-label" htmlFor="sortExpAsc">Sort by Date (ASC) </label>
+                            <input className="form-check-input" type="radio" name="sortOption" id="sortNameAsc" 
+                              value="asc" checked={DropDownFilter === "asc"}
+                              onChange={e => setDropDownFilter(e.target.value)}/>
+                              <label className="form-check-label" htmlFor="sortNameAsc">Sort by Date(ASC)</label>
                           </div>
                       </li>
                       <li>
                           <div className="form-check">
-                          <input className="form-check-input" type="radio" name="sortOption" id="sortExpDesc" />
-                          <label className="form-check-label" htmlFor="sortExpDesc">Sort by Date (DESC)</label>
+                            <input className="form-check-input" type="radio" name="sortOption" id="sortNameDesc" 
+                              checked={DropDownFilter === "desc"}  value="desc"
+                              onChange={e => setDropDownFilter(e.target.value)}/>
+                            <label className="form-check-label" htmlFor="sortNameDesc">Sort by Date (DESC)</label>
                           </div>
                       </li>
                   </ul>
@@ -199,13 +230,12 @@ export default function SystemNotification(){
             <th>Author</th>
             <th>Status</th>
             <th>Created At</th>
-            <th>Expired At</th>
             <th>Type</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {SysNotificationData.data.map(item => (
+          {displayData?.map(item => (
             <tr key={item.id}>
               <td>
                 <div className="form-check">
@@ -218,11 +248,11 @@ export default function SystemNotification(){
               <td>{item.user_tb.name}</td>
               <td> <span className={`status ${item.status} fs-4`}>{item.status}</span> </td>
               <td>{formatDate(item.created_at)}</td>
-              <td>{formatDate(item.expired_at)}</td>
+
               <td>{item.type}</td>
               <td>
                 <div className="actions">
-                  <button type="button" className="btn btn-info p-3" data-bs-toggle="modal" data-bs-target={`#NoticeModal-${item.id}`} onClick={()=>console.log(formData)}>Edit</button>
+                  <button type="button" className="btn btn-info p-3 fs-2" data-bs-toggle="modal" data-bs-target={`#NoticeModal-${item.id}`} onClick={()=>console.log(formData)}>Edit</button>
                   <button className="delBtn" onClick={()=>handleDelete(item.id)}>Delete</button>
                 </div>
               </td>
@@ -296,7 +326,7 @@ export default function SystemNotification(){
           <button type="button" className="btn btn-primary fs-2" data-bs-toggle="modal" data-bs-target="#NoticeModal">
           Make a new notification
         </button>
-      {}
+      
       <div className="modal fade" id="NoticeModal" tabIndex={-1} aria-hidden="true">
           <div className="modal-dialog">
             <div className="modal-content">

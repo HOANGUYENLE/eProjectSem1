@@ -10,9 +10,15 @@ class FaqController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $allFAQ = FAQ::with("UserTb")->orderBy("created_at", "desc")->get();
+        return $allFAQ;
+    }
+
+    public function indexPage(Request $request){
+        $perPage = $request->input('per_page', 6); //6 by default
+        $allFAQ = FAQ::with("UserTb")->paginate($perPage);
         return $allFAQ;
     }
 

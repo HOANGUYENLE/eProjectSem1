@@ -34,5 +34,4 @@ class SystemNotification extends Model
     public function PivotNotice():HasMany{
         return $this->hasMany(PivotNotice::class, "notification_id", "id");
     }
-    
 }

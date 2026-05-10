@@ -94,3 +94,29 @@
   color: #fff;
 } 
 
+#practiceAreas .btn {
+  background-color: #848383ea;   /* Bootstrap primary blue */
+  color: black;
+  border: 2px solid transparent;
+  transition: all 0.25s ease-in-out;
+}
+
+#practiceAreas .btn.active{
+  background-color: #e3e6ea;   /* slightly darker blue */
+  border-color: #81818118;       /* add border highlight */
+  transform: translateY(-5px); /* subtle lift */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.8);
+}
+
+#practiceAreas .btn:hover {
+  background-color: #e3e6ea;   /* slightly darker blue */
+  border-color: #81818118;        /* add border highlight */
+  transform: translateY(-5px); /* subtle lift */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.8);
+}
+
+#practiceAreas .btn:active {
+  transform: scale(0.97);
+  box-shadow: none;
+}
+

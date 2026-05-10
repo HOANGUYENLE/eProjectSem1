@@ -63,3 +63,21 @@
 .news .load:hover {
   background: #6c452a;
 }
+
+.btn.btn-lg.btn-danger.mt-3 {
+  background: #8b5e3c;
+  border: 0.5px solid #8b5e3c;   /* thin border */             /* lighter weight */
+  color: #fff;
+  padding: 5px 10px;   /* slightly larger padding */
+  border-radius: 10px;
+  transition: 0.5s ease;
+  font-size: 1.3rem;        /* bigger text */
+  font-weight: 700;  
+}
+
+.popover{
+  font-size: 1.6rem;   /* bigger font size */
+  font-weight: 500;    /* medium weight */
+  line-height: 1.5;    /* nicer spacing */
+  color: #000;         /* ensure readable */
+}
