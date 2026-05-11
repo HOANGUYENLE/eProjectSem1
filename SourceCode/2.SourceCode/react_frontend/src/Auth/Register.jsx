@@ -46,6 +46,8 @@ export default function Register(){
         const phoneRegex = /^[0-9]{8,12}$/;
         if (!phoneRegex.test(formData.phone)) {
           errors.phone = "Phone must be 8–12 digits";
+        } else if (/^0+$/.test(formData.phone)) {
+          errors.phone = "Phone number cannot be all zeros";
         }
       }
 

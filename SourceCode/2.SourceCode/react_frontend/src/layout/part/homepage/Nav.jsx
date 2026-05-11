@@ -76,7 +76,9 @@ export default function Nav(){
                         <NavLink to="/News" end className={({isActive})=>isActive?"nav-link active":"nav-link" }>News</NavLink>
                     </li>
                 </ul>
-                {!user.token?<><Link to="/login" role="button" className="btn btn-primary">Signin</Link>
+                {!user.token?<>
+                <Link to="/login" role="button" className="btn nav-link fs-2">Signin</Link>
+                <Link to="/signup" role="button" className="btn nav-link fs-2">Register</Link>
                 </>:
                 <ul className="nav navbar-nav navbar-right">
                     {user.role !== "admin"?

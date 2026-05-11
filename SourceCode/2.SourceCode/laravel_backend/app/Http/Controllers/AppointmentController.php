@@ -9,7 +9,9 @@ use App\Models\LawyerFiles;
 use App\Models\Rescheduled;
 use App\Models\SystemNotification;
 use App\Models\PivotNotice;
+use App\Models\UserTb;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class AppointmentController extends Controller
 {
@@ -175,11 +177,17 @@ class AppointmentController extends Controller
             $nextSchedule = now()->addDays($remainDays)->format('l, d M Y');
             $startTime = date('H:i', strtotime($availabilitySlot->start_time));
             $endTime = date('H:i', strtotime($availabilitySlot->end_time));
-
-            $content = "Your next appointment have been reschedule to $nextSchedule from $startTime to $endTime";
+            
+            $appointment = Appointment::find($reschedule->appointment_id);
+            $lawyer = LawyerFiles::where("lawyer_id", $appointment->lawyer_id)->first()->load('UserTb');
+            $customer = UserTb::where("id", $appointment->customer_id)->first();
+            $nameLawyer = $lawyer->UserTb->name;
+            $nameCustomer = $customer->name;
+            
+            $content1 = "Your next appointment with lawyer $nameLawyer have been reschedule to $nextSchedule from $startTime to $endTime";
             $newNotification = SystemNotification::create([
                 'title'=>'Rescheduled Notice',
-                'content' => $content,
+                'content' => $content1,
                 'author_ID' => 17,
                 'status' => 'published',
                 'type' => 'reminder'
@@ -187,7 +195,21 @@ class AppointmentController extends Controller
             PivotNotice::create([
                 "notification_id" => $newNotification->id,
                 "appointment_id" => $reschedule->appointment_id,
-                "user_id"       => $user->id
+                "user_id"       => $appointment->customer_id
+            ]);
+
+            $content2 = "Your next appointment with customer $nameCustomer have been reschedule to $nextSchedule from $startTime to $endTime";
+            $newNotification = SystemNotification::create([
+                'title'=>'Rescheduled Notice',
+                'content' => $content2,
+                'author_ID' => 17,
+                'status' => 'published',
+                'type' => 'reminder'
+            ]);
+            PivotNotice::create([
+                "notification_id" => $newNotification->id,
+                "appointment_id" => $reschedule->appointment_id,
+                "user_id"       => $appointment->lawyer_id
             ]);
         }
         else if($reschedule->status === 'canceled'){
@@ -318,8 +340,10 @@ class AppointmentController extends Controller
         ->get()
         ->map(function ($each) {
             $each->lawyer->documentImage = $each->lawyer->documentImage
-                ? asset('storage/' . $each->lawyer->documentImage)
-                : null;
+    ? (Str::startsWith($each->lawyer->documentImage, ['http://', 'https://'])
+        ? $each->lawyer->documentImage
+        : asset('storage/' . $each->lawyer->documentImage))
+    : null;
             return $each;
         });
             return $AppointmentData;

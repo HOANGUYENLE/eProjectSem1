@@ -53,7 +53,8 @@ export default function AppointmentStatus() {
   }, [AppointmentData.data])
 
   useEffect(()=>{
-    //console.log(selectedLawyer.slot)
+    //console.log(selectedLawyer.id)
+    window.scrollTo(0, 800)
   }, [selectLawyer])
 
   const getStatusText = (status) => {
@@ -113,7 +114,7 @@ export default function AppointmentStatus() {
           <div className="spinner-border"></div>:
           AppointmentData.data.map((each)=>{
             return(
-            <div key={each.id} className="lawyer-card">
+            <div key={each.id} className={`lawyer-card ${selectedLawyer?.id === each.id?"active-card":""}`}>
               <div className="lawyer-top">
                 <img src={each.lawyer.documentImage} alt={each.lawyer.user_tb.name} />
                 <div className={`lawyer-status ${each.status}`}>
@@ -189,7 +190,7 @@ export default function AppointmentStatus() {
                 <FaCommentDots />
                 <span>Request Content</span>
               </div>
-              <strong>{selectedLawyer.request_text !== ""?selectedLawyer.request_text:"No request from you"}</strong>
+              <strong>{selectedLawyer.request_text?selectedLawyer.request_text:"No request from you"}</strong>
             </div>
 
             <div className="detail-item">

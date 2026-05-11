@@ -75,8 +75,14 @@ export async function fetchRegisterAppointment(content){
         }
     }
     catch(err){
-        console.log(err);
-        alert(err.message);
+       if (err.response) {
+            //console.error("Server error:", err.response.data);
+            alert(err.response.data.err || "Something went wrong on the server");
+        } else if (err.request) {
+            alert("No response from server. Please check your connection.");
+        } else {
+            alert(err.message);
+        }
     }
     return false;
 }

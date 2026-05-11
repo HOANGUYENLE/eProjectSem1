@@ -2,6 +2,7 @@ import { NavLink, useNavigate, Outlet } from "react-router-dom";
 import { lawyerLogout, getCurrentLawyer } from "../services/lawyerApi";
 import { useContext } from "react";
 import { AuthContext } from "../context/UserContext";
+import Reminder from "../Customer/Reminder";
 
 export default function LawyerLayout() {
 
@@ -51,10 +52,14 @@ export default function LawyerLayout() {
                   Customer Appointments
                 </NavLink>
               </li>
+              
             </ul>
 
             <div className="d-flex align-items-center gap-3 fs-3">
               <span>Hello, {currentUser?.name || "lawyer"}</span>
+              <div className="nav-item">
+                  <Reminder/>
+              </div>
               <button className="btn btn-outline-danger btn-sm fs-2" onClick={(e)=>handleLogout2(e)}>
                 Logout
               </button>

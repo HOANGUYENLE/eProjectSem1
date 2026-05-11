@@ -13,7 +13,8 @@ export default function FAQManagement(){
     const {formatTime, formatDate} = useContext(AuthContext);
     const [page, setPage] = useState(1);
     const perPage = 6;
-    
+    const [showDetail, setShowDetail] = useState(false);
+
     const [displayFaq, setDisplayFaq] = useState(null);
 
     const [DropDownType, setDropDownType] = useState("default");
@@ -64,6 +65,7 @@ export default function FAQManagement(){
     }, [DropDownType, DropDownFilter, FAQResults.data]);
 
     const handleEdit = (faq)=>{
+      setShowDetail(true);
       let temp = {
         "question": "",
         "answer": "",
@@ -83,6 +85,7 @@ export default function FAQManagement(){
       setAuthor("");
       setCurrentPost(null);
       setFormData(formDataClean)
+      setShowDetail(false);
     }
 
     const handleSubmit = async () =>{
@@ -105,7 +108,8 @@ export default function FAQManagement(){
   return (
     <div className="faq-dashboard">
       
-      <div className="faq-detail">
+      {showDetail && 
+        <div className="faq-detail">
         <div className="faq-detail-header">
           <h1 className="fs-1 fw-bolder">FAQ Detail</h1>
         </div>
@@ -136,6 +140,8 @@ export default function FAQManagement(){
             </div>
         </form>
       </div>
+      }
+      
 
       <div className="faq-table">
         <h3 className="fs-1 fw-bolder">All FAQs</h3>

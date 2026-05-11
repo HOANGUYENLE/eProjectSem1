@@ -102,3 +102,11 @@
 .chartTitle{
     text-align: center;
 }
+
+.adminLawyer .profile-img{
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border: 3px solid #007bff;
+    object-position: top;
+}

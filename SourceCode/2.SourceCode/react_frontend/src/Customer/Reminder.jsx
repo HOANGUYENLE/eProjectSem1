@@ -72,7 +72,7 @@ export default function Reminder() {
                       — From {reminder.user_tb.name}
                     </small>
                     <p className="mt-3">{reminder.content}</p>
-                    {(reminder.title.includes("Cancel") || reminder.title.includes("Response")) && <button className="btn btn-primary" onClick={()=>HandleConfirmReminder(reminder.id)}>Confirm</button>}
+                    {(reminder.title.includes("Cancel") || reminder.title.includes("Response") || reminder.title.includes("Rescheduled")) && <button className="btn btn-primary" onClick={()=>HandleConfirmReminder(reminder.id)}>Confirm</button>}
                   </div>
                 ))}
               </div>

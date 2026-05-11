@@ -98,7 +98,7 @@ export default function AdminUserManagement() {
             </form>
             <div className="input-group" style={{ maxWidth: "200px", }}>
                 <select className="form-select fs-3 p-3" id="dropdownRole" name="dropdownRole" value={chooseRole?chooseRole:"default"} onChange={(e)=>setRole(e.target.value)}>
-                    <option value="default">Choose Role...</option>
+                    <option value="default">Filter by Role...</option>
                     <option value="admin">Admin</option>
                     <option value="lawyer">Lawyer</option>
                     <option value="customer">Customer</option>
@@ -131,11 +131,6 @@ export default function AdminUserManagement() {
                   <span className={`role ${user.role.RoleName} fs-2`}>{user.role.RoleName}</span>
                 </td>
                 <td>{user.phone || "—"}</td>
-                {/** <td>
-                  <div className="actions justify-content-start d-flex">
-                    <button className="delBtn">Delete</button>
-                  </div>
-                </td>*/}
                 
               </tr>
             ))}

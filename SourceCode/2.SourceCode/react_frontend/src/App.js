@@ -18,6 +18,7 @@ import Profile from './layout/Profile';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import HomepageIndex from './layout/part/homepage/Index';
 import AdminProtection from './protectComponent/AdminProtection';
+import LawyerProtection from './protectComponent/LawyerProtection';
 import LawyerList from './Customer/LawyerList';
 import Login from './Auth/Login';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -61,7 +62,7 @@ function App() {
 
           <Route path="/lawyer/login" element={<LawyerLoginPage />} />
           
-          <Route path="/lawyer" element={<LawyerLayout />}>
+          <Route path="/lawyer" element={<LawyerProtection><LawyerLayout /></LawyerProtection>}>
             <Route path="dashboard" element={<LawyerDashboardPage />} />
             <Route path="profile" element={<LawyerProfilePage />} />
             <Route path="specializations" element={<LawyerSpecializationsPage />} />

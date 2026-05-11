@@ -50,7 +50,7 @@ export default function AdminAppointment(){
     }, [AppointmentData.data])
 
     useEffect(()=>{
-        setVisibleCount(3);
+        //setVisibleCount(3);
         setSearch("");
         if(AppointmentType !== "default"){ 
           const filterData = rawData?.AppointmentData.filter(each=>{

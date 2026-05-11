@@ -15,11 +15,13 @@ export default function AdminLawyerManagement(){
     useEffect(()=>{window.scrollTo(0, 0)},[])
     const {user, navigate, formatTime} = useContext(AuthContext);
 
+    const [chooseStatus, setChooseStatus] = useState("all")
     const [chooseSpecs, setChooseSpecs] = useState("all");
     const [chooseCity, setChooseCity] = useState("all");
     const [DropDownFilter, setDropDownFilter] = useState("NameAsc");
     const [DisplayData, setDisplayData] = useState(null);
     const [search, setSearch] = useState("");
+    const [visibleCount, setVisibleCount] = useState(3);
 
     const [CityList, addCity] = useState([]);
     const [SpecsList, addSpecs] = useState([]);
@@ -118,6 +120,12 @@ export default function AdminLawyerManagement(){
             }) 
         }
 
+        if(chooseStatus !== "all"){
+            temp = temp.filter(each=>{
+                return each.status === chooseStatus
+            })
+        }
+
         if(chooseSpecs !== "all"){
             temp = temp.filter(each=>{
                 if(!each.specialization){ return false; }
@@ -150,10 +158,8 @@ export default function AdminLawyerManagement(){
 
         setDisplayData(temp);
 
-        //console.log(chooseSpecs);
-        //console.log(chooseCity);
-        //console.log(DropDownFilter);
-    }, [chooseSpecs, chooseCity, DropDownFilter, LawyerData.data, search])
+        
+    }, [chooseSpecs, chooseCity, DropDownFilter, LawyerData.data, search, chooseStatus])
 
     const handleStatus = (value) => {
         setStatus({"status": value});
@@ -197,9 +203,7 @@ export default function AdminLawyerManagement(){
                 <h5 className="chartTitle">Number of appointments per month</h5>
                 <div style={{height: "200px", width:"100%" ,maxWidth: "600px"}}>
                     <LineStackBar datasets={barChartDataSet} labels={labels}/>
-                </div>
-                
-                
+                </div>   
             </div>
         </div>
         <hr />
@@ -233,6 +237,16 @@ export default function AdminLawyerManagement(){
                     name="dropdownSpecialization" onChange={e=>setChooseSpecs(e.target.value)}>
                     <option value="all">Choose Specialization...</option>
                     {SpecData?.data && SpecData.data.map((value, index) => (<option key={value.id} value={value.name}>{value.name}</option> )) }
+                </select>
+            </div>
+
+            <div className="input-group" style={{ maxWidth: "220px" }}>
+                <select className="form-select" id="dropdownStatus" 
+                    name="dropdownStatus" onChange={e=>setChooseStatus(e.target.value)}>
+                    <option value="all">All status...</option>
+                    <option value="approve">Approved</option>
+                    <option value="reject">Rejected</option>
+                    <option value="pending">Pending</option>
                 </select>
             </div>
 
@@ -296,7 +310,7 @@ export default function AdminLawyerManagement(){
                 </tr>
                 </thead>
                 <tbody>
-                    {DisplayData?.map((value, index)=>{
+                    {DisplayData?.slice(0, visibleCount).map((value, index)=>{
                     return(
                         <tr key={value.id}>
                             <td>{value.name}</td>
@@ -315,7 +329,7 @@ export default function AdminLawyerManagement(){
             {LawyerData?.data && LawyerData.data.map((value, index)=>{
                 return (
                     <>
-                    <div className="modal fade" id={`lawyerModal-${value.id}`} key={value.id} tabIndex={-1}>
+                    <div className="modal adminLawyer" id={`lawyerModal-${value.id}`} key={value.id} tabIndex={-1}>
                         <div className="modal-dialog">
                             <div className="modal-content">
                                 <div className="modal-header">
@@ -323,49 +337,59 @@ export default function AdminLawyerManagement(){
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                                 </div>
                                 <div className="modal-body">
+                                    <div className="text-center mb-4">
+                                        {value.image? 
+                                        <a role="button" className="fs-2 p-2 d-block nav-link" href={value.image} target="_blank" rel="noopener noreferrer">
+                                            <img src={value.image} alt="lawyerImage" className="profile-img"/>
+                                        </a>: 
+                                        <span className="d-block fs-3 text-muted">
+                                            No image yet
+                                        </span>}
+                                    </div>
+
                                     <form>
-                                        <div className="mb-3">
-                                            <label className="form-label">Name</label>
-                                            <input type="text" className="form-control" value={value.name} readOnly />
+                                        <div className="row mb-3">
+                                            <div className="col-md-4">
+                                                <label className="fw-bolder form-label">Name</label>
+                                                <input type="text" className="form-control" value={value.name} readOnly />
+                                            </div>
+                                            <div className="mb-3 col-md-8">
+                                                <label className="fw-bolder form-label">Email</label>
+                                                <input type="email" className="form-control" value={value.email} readOnly />
+                                            </div>
                                         </div>
                                         <div className="mb-3">
-                                            <label className="form-label">Email</label>
-                                            <input type="email" className="form-control" value={value.email} readOnly />
-                                        </div>
-                                        <div className="mb-3">
-                                            <label className="form-label">Address</label>
+                                            <label className="fw-bolder form-label">Address</label>
                                             <input type="text" className="form-control" value={value.address} readOnly />
                                         </div>
                                         <div className="mb-3">
-                                            <label className="form-label">City</label>
+                                            <label className="fw-bolder form-label">City</label>
                                             <input type="text" className="form-control" value={value.city?.cityName} readOnly />
                                         </div>
 
                                         <div className="mb-3">
-                                            <label className="form-label">Image</label>
-                                            {value.image?<a role="button" className="fs-2 p-2 d-block nav-link" href={value.image} target="_blank" rel="noopener noreferrer">View Image</a>: <span>No image</span>}
+                                            <label className="fw-bolder form-label">Specialization</label>
+                                            <textarea rows={4} className="form-control" value={value.specialization?value.specialization.join(", ") : "No specialization yet"} readOnly />
                                         </div>
+                                        
+                                        <div className="row mb-3">
+                                            <div className="col-md-6">
+                                                <label className="fw-bolder form-label">Status</label>
+                                                <select className="form-select form-control" value={!Status?value.status:Status.status} onChange={(e)=>handleStatus(e.target.value)}>
+                                                    <option value="pending">Pending</option>
+                                                    <option value="reject">Reject</option>
+                                                    <option value="approve">Approve</option>
+                                                </select>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label className="fw-bolder form-label">Years of Experience</label>
+                                                <input type="number" className="form-control" value={value.years} readOnly />
+                                            </div>
+                                        </div>
+                                        
 
                                         <div className="mb-3">
-                                            <label className="form-label">Specialization</label>
-                                            <input type="text" className="form-control" value={value.specialization?value.specialization.join(", ") : "No specialization yet"} readOnly />
-                                        </div>
-
-                                        <div className="mb-3">
-                                            <label className="form-label">Status</label>
-                                            <select className="form-select form-control" value={!Status?value.status:Status.status} onChange={(e)=>handleStatus(e.target.value)}>
-                                                <option value="pending">Pending</option>
-                                                <option value="reject">Reject</option>
-                                                <option value="approve">Approve</option>
-                                            </select>
-                                        </div>
-                                        <div className="mb-3">
-                                            <label className="form-label">Years of Experience</label>
-                                            <input type="number" className="form-control" value={value.years} readOnly />
-                                        </div>
-
-                                        <div className="mb-3">
-                                            <label className="form-label">Available Time</label>
+                                            <label className="fw-bolder form-label">Available Time</label>
                                             <textarea rows={!value.availability?4:value.availability.length} className="form-control p-2" 
                                             value={!value.availability?"No available time yet": 
                                                     value.availability.map((each)=>`${each.day_of_week} ${formatTime(each.start_time)}-${formatTime(each.end_time)}, ${each.is_booked?"Booking": "Free"}`).join("\n")} readOnly/>
@@ -383,6 +407,16 @@ export default function AdminLawyerManagement(){
                 )
             })}
             </div>
+            
+        }
+        {visibleCount < DisplayData?.length && 
+        <div className="d-flex justify-content-center w-100">
+        <button
+            className="btn btn-primary mt-3 fs-1"
+            onClick={() => setVisibleCount(visibleCount + 3)}>
+            Load More
+        </button>
+        </div>
         }        
     </>)
 }

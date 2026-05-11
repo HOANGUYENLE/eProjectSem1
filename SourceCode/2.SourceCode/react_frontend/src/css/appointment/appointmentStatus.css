@@ -61,6 +61,13 @@
 .appointmentRes .lawyer-card h3{font-size:24px;font-weight:700;color:#111;margin-bottom:8px}
 .appointmentRes .lawyer-card span{color:#64748b;font-size:15px}
 
+.appointmentRes .lawyer-card.active-card {
+  border: 2px solid #007bff; /* highlight border */
+  background-color: #f0f8ff; /* subtle blue background */
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  transform:translateY(-20px)
+}
+
 /* INFO */
 .appointmentRes .lawyer-info{
   display:flex;justify-content:space-between;

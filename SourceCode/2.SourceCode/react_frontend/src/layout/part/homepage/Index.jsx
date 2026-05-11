@@ -28,7 +28,7 @@ export default function HomepageIndex(){
     const CityData = queriesResults[0];
     const LawyersData = queriesResults[1];
     if(LawyersData.data){
-      //console.log(LawyersData.data);
+      console.log(LawyersData.data);
     }
 
     const starRatingCal = (ratingVal) =>{
@@ -109,8 +109,8 @@ export default function HomepageIndex(){
         <h1>LegalEase's Lawyers</h1>
 
         <div className="arr-row">
-            {LawyersData.isLoading && !LawyersData.isError? <div className="spinner-border"></div>:
-              LawyersData?.data.filter(each => each.status === "approve" && each.specialization?.length > 0).slice(0,4).map((each)=>{
+            {LawyersData?.isLoading && !LawyersData.isError? <div className="spinner-border"></div>:
+              LawyersData.data?.filter(each => each.status === "approve" && each.specialization?.length > 0).slice(0,4).map((each)=>{
                   return (
                     <div className="arr-col" key={each.id}>
                     <div className="image">
