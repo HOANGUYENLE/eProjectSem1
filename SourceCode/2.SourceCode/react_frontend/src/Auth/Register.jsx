@@ -19,8 +19,60 @@ export default function Register(){
         "password_confirmation": "",
     });
     const [err, setErr] = useState({})
+    function validateFormData(formData) {
+      const errors = {};
+      if (!formData.name.trim()) {
+        errors.name = ["Name is required"];
+      } else if (formData.name.length > 80) {
+        errors.name = ["Name must be less than 10 characters"];
+      }
+
+      // Email
+      if (!formData.email.trim()) {
+        errors.email = ["Email is required"];
+      } else {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+          errors.email = ["Invalid email format"];
+        } else if (formData.email.length > 80) {
+          errors.email = ["Email must be less than 80 characters"];
+        }
+      }
+
+      // Phone (digits only, 8–12 length)
+      if (!formData.phone.trim()) {
+        errors.phone = "Phone number is required";
+      } else {
+        const phoneRegex = /^[0-9]{8,12}$/;
+        if (!phoneRegex.test(formData.phone)) {
+          errors.phone = "Phone must be 8–12 digits";
+        }
+      }
+
+      // Password
+      if (!formData.password) {
+        errors.password = "Password is required";
+      } else if (formData.password.length > 255) {
+        errors.password = "Password must be less than 255 characters";
+      }
+
+      // Password confirmation
+      if (formData.password !== formData.password_confirmation) {
+        errors.password_confirmation = "Passwords do not match";
+      }
+
+      return errors;
+    }
+
     async function handleRegister(e){
         e.preventDefault();
+
+        const validationErrors = validateFormData(formData);
+          if (Object.keys(validationErrors).length > 0) {
+          setErr(validationErrors);
+          return;
+        }
+
         try{
             const res = await axios.post("/api/register", formData, {timeout: 10000})
             let role = res.data.user.role.RoleName;    
@@ -42,8 +94,7 @@ export default function Register(){
                 if (status === 422) {
                 alert(`Error ${status}: ${data.message}`);
                 setErr(data.errors);
-                console.log(data.errors);
-                // Example: show first name error if exists
+                //console.log(data.errors);
                 if (data.errors.name) {
                     console.log(data.errors.name[0]);
                 }
@@ -54,7 +105,6 @@ export default function Register(){
                 alert(`Error ${status}: ${data.message || "Unexpected error"}`);
                 }
             } else {
-                // Handle network or timeout errors
                 alert(`Network error: ${errors.message}`);
             }
         }
@@ -80,13 +130,14 @@ export default function Register(){
         />
       </div>
       {err.name && <div className="alert alert-danger mt-2">{err.name[0]}</div>}
+      
     </div>
 
     <div className="mb-3">
       <div className="input-group">
         <span className="input-group-text">@</span>
         <input
-          type="email"
+          type="text"
           className="form-control"
           id="email"
           placeholder="Enter your email address"

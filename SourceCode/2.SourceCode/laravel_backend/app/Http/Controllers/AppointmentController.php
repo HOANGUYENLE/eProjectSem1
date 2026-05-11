@@ -59,6 +59,42 @@ class AppointmentController extends Controller
         return response()->json(["success"=>True, "reminderList" => $arrayReminder],200);
     }
 
+    public function ResponsedAppointment(Request $request, Appointment $appointment){
+        $user = $request->user();
+        if($user->role_id !== 3){
+            return response()->json(["err"=>"You are not lawyer"],403);
+        }
+
+        $field = $request->validate([
+            'response_text' => 'required|string',
+        ]);
+
+        $appointment->timestamps = false;
+        $appointment->response_text = $field['response_text'];
+        $appointment->save();
+
+        $lawyer_name = $user->name;
+
+        $content = "You got a response from lawyer {$lawyer_name} about your appointment.";
+        $newNotification = SystemNotification::create([
+            'title'       => 'Response',
+            'content'     => $content,
+            'author_ID'   => 17,
+            'status'      => 'published',
+            'type'        => 'reminder',
+        ]);
+
+        PivotNotice::create([
+            "notification_id" => $newNotification->id,
+            "appointment_id"  => $appointment->id,
+            "user_id"         => $appointment->customer_id,
+        ]);
+
+         return response()->json([
+        "message" => "Appointment responded successfully",
+            "appointment" => $appointment
+        ], 200);
+    }
     
     public function isExpired(Request $request, Appointment $appointment){
         $user = $request->user();
@@ -81,7 +117,6 @@ class AppointmentController extends Controller
         return response()->json(["success"=> True,
                                  "message"=> "Appointment end"], 200);
     }
-
     /**
      * Update the specified resource in storage.
      */
@@ -159,13 +194,18 @@ class AppointmentController extends Controller
             $unBookedSlot = $reschedule->new_slot_id?$reschedule->new_slot_id:$reschedule->old_slot_id;
             $availabilitySlot = AvailabilitySlot::where('id', $unBookedSlot)->first();
             $availabilitySlot->update([ 'is_booked'=>0 ]);
-            Appointment::where('id', $reschedule->appointment_id)->update(['status' => 'completed']);
+            $appointment = Appointment::find($reschedule->appointment_id);
+            if ($appointment) {
+                $appointment->status = 'completed';
+                $appointment->save();
+            }
             $lawyer = LawyerFiles::where("lawyer_id", $availabilitySlot->lawyer_id)->first()->load('UserTb');
             $nameLawyer = $lawyer->UserTb->name;
             $remainDays = $this->calculateDiff($availabilitySlot->day_of_week);
             $nextSchedule = now()->addDays($remainDays)->format('l, d M Y');
             $startTime = date('H:i', strtotime($availabilitySlot->start_time));
             $endTime = date('H:i', strtotime($availabilitySlot->end_time));
+            
 
             $content1 = "Your appointment with lawyer: $nameLawyer have been canceled Schedule: $nextSchedule from $startTime to $endTime";
             $newNotification = SystemNotification::create([
@@ -178,7 +218,7 @@ class AppointmentController extends Controller
             PivotNotice::create([
                 "notification_id" => $newNotification->id,
                 "appointment_id" => $reschedule->appointment_id,
-                "user_id"       => $user->id
+                "user_id"       => $appointment->customer_id,
             ]);
 
             $content2 = "Your appointment at $nextSchedule from $startTime to $endTime  have been canceled";
@@ -192,7 +232,7 @@ class AppointmentController extends Controller
             PivotNotice::create([
                 "notification_id" => $newNotification->id,
                 "appointment_id" => $reschedule->appointment_id,
-                "user_id"       => $lawyer->UserTb->id
+                "user_id"       => $appointment->lawyer_id,
             ]);
 
         }
@@ -263,27 +303,27 @@ class AppointmentController extends Controller
      */
     public function show(Request $request){
         $user = $request->user();
-$column = $user->role_id === 2 ? 'customer_id' : 'lawyer_id';
+        $column = $user->role_id === 2 ? 'customer_id' : 'lawyer_id';
 
-$AppointmentData = Appointment::with([
-        'lawyer',
-        'lawyer.UserTb',
-        'lawyer.reviews',
-        'UserTb',
-        'reschedules',
-        'slot'
-    ])
-    ->where($column, $user->id)
-    ->where('status', 'pending')
-    ->get()
-    ->map(function ($each) {
-        $each->lawyer->documentImage = $each->lawyer->documentImage
-            ? asset('storage/' . $each->lawyer->documentImage)
-            : null;
-        return $each;
-    });
-        return $AppointmentData;
-    }
+        $AppointmentData = Appointment::with([
+            'lawyer',
+            'lawyer.UserTb',
+            'lawyer.reviews',
+            'UserTb',
+            'reschedules',
+            'slot'
+        ])
+        ->where($column, $user->id)
+        ->where('status', 'pending')
+        ->get()
+        ->map(function ($each) {
+            $each->lawyer->documentImage = $each->lawyer->documentImage
+                ? asset('storage/' . $each->lawyer->documentImage)
+                : null;
+            return $each;
+        });
+            return $AppointmentData;
+        }
 
     public function singleAppointment(Request $request, Appointment $appointment){
         $user = $request->user();

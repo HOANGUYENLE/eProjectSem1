@@ -19,7 +19,7 @@ export default function Reminder() {
           { 
             queryKey: ["Reminder", user.token],
             queryFn: fetchReminder,
-            refetchInterval: 1000 * 60,
+            refetchInterval: 1000 * 30,
             enabled: !!user.token
           }
         ]
@@ -29,14 +29,14 @@ export default function Reminder() {
 
   useEffect(()=>{
     if(ReminderData.data){
-      //console.log(ReminderData.data);
+      console.log(ReminderData.data);
     }
   }, [ReminderData]);
   const HandleConfirmReminder = async (id) =>{
     const res = await fetchConfimRead(id);
     setShowNotif(false);
     if (res) {
-      console.log("Confirmed successfully");
+      //console.log("Confirmed successfully");
       setShowNotif(true);
       queryClient.invalidateQueries(["Reminder", user.token]);
     }
@@ -52,9 +52,9 @@ export default function Reminder() {
           </svg>
 
           {/* badge counter */}
-          {ReminderData?.data && ReminderData?.data.length > 0 &&
+          {(Array.isArray(ReminderData?.data) && ReminderData?.data.length > 0) &&
             <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-              {ReminderData.data.length}
+              {ReminderData?.data.length}
             </span>}
       </button>
       {showNotif && ReminderData?.data.length > 0 && (
@@ -72,7 +72,7 @@ export default function Reminder() {
                       — From {reminder.user_tb.name}
                     </small>
                     <p className="mt-3">{reminder.content}</p>
-                    {reminder.title.includes("Cancel") && <button className="btn btn-primary" onClick={()=>HandleConfirmReminder(reminder.id)}>Confirm</button>}
+                    {(reminder.title.includes("Cancel") || reminder.title.includes("Response")) && <button className="btn btn-primary" onClick={()=>HandleConfirmReminder(reminder.id)}>Confirm</button>}
                   </div>
                 ))}
               </div>

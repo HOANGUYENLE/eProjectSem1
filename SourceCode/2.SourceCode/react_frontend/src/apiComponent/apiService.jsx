@@ -86,6 +86,35 @@ export async function fetchTakeAppointment(){
     return res.data;
 }
 
+export async function fetchResponseAppointment(AppointmentId, content){
+    try{
+        const res = await apiAuth.post(`/booking/response/${AppointmentId}`, content);
+        if(res.data){
+            console.log(res.data)
+            return true;
+        }
+    }
+    catch(err){
+        console.log(err);
+        alert(err.message);
+    }
+    return false;
+}
+
+export async function fetchDoneAppointment(apptID){
+    try{
+        const res = await apiAuth.post(`/completed/${apptID}`);
+        if(res.data){
+            console.log(res.data)
+            return true;
+        }
+    }
+    catch(err){
+        console.log(err);
+        alert(err.message);
+    }
+    return false;
+}
 
 export async function fetchSingleAppointment(AppointmentID){
     const res = await apiAuth.get(`/booking/seeBooking/${AppointmentID}`);

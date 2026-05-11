@@ -1,0 +1,16 @@
+.lawyerBooking {
+  padding: 2rem;
+}
+
+.lawyerBooking h1 {
+  color: #0d6efd;
+}
+
+.lawyerBooking table th {
+  background-color: #f8f9fa;
+  text-align: center;
+}
+
+.lawyerBooking table td {
+  vertical-align: middle;
+}

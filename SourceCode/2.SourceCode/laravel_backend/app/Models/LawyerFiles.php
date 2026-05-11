@@ -21,7 +21,7 @@ class LawyerFiles extends Model
     public $timestamps = false;
     protected $primaryKey = 'lawyer_id';
     protected $guarded = [];
-    protected $hidden = ['cardNumber', 'licenseNumber'];
+    //protected $hidden = ['cardNumber', 'licenseNumber'];
 
     public function UserTb():BelongsTo{
         return $this->belongsTo(UserTb::class, 'lawyer_id', 'id');
@@ -35,6 +35,11 @@ class LawyerFiles extends Model
         return $this->belongsTo(City::class, 'city', 'id');
     }
 
+    public function cityRef(): BelongsTo
+    {
+        return $this->city();
+    }
+
     public function specialization():BelongsToMany{
         return $this -> belongsToMany(
             Specialization::class,
@@ -42,9 +47,21 @@ class LawyerFiles extends Model
             'lawyer_id',
             'specialization_id')->using(LawyerSpec::class);
     }
+
+    public function specializations(): BelongsToMany
+    {
+        return $this->specialization();
+    }
+
+
      public function availability(): HasMany
     {
         return $this->hasMany(AvailabilitySlot::class, 'lawyer_id', 'lawyer_id');
+    }
+
+     public function availabilitySlots(): HasMany
+    {
+        return $this->availability();
     }
 
 }

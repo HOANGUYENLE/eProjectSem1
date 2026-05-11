@@ -12,15 +12,41 @@ export default function Login(){
         "email": "",
         "password": "",
     });
+
+    function validateLogin(formData) {
+        const errors = {};
+        if (!formData.email.trim()) {
+            errors.email = "Email is required";
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (formData.email && !emailRegex.test(formData.email)) {
+            errors.email = "Invalid email format";
+        }
+        if (!formData.password.trim()) {
+            errors.password = "Password is required";
+        }
+        return errors;
+    }
+
     const [err, setErr] = useState({})
     async function handleLogin(e){
         e.preventDefault();
+        const validationErrors = validateLogin(formData);
+        if (Object.keys(validationErrors).length > 0) {
+            setErr(validationErrors);
+        return;
+        }
         try{
             const res = await axios.post("/api/login", formData, {timeout: 10000});
             console.log("User Data: ", res.data.user, res.data.token);
-            let role = res.data.user.role.RoleName;    
-            let name = res.data.user.name;
-            let token = res.data.token;
+            
+            if(res.data.password_err){
+                alert(res.data.password_err);
+                return;
+            }
+            let role = res.data?.user.role.RoleName;    
+            let name = res.data?.user.name;
+            let token = res.data?.token;
             await saveUserInfo(name, role, token);
             if(res.data){
                 alert("Login Successfully");
@@ -28,6 +54,7 @@ export default function Login(){
             }
         }
         catch (errors){
+            console.log(errors)
             if(errors.response){
                 alert(`Error ${errors.response.status}: ${errors.response.data.message || "Unexpected error"}`);
             }   
@@ -42,12 +69,14 @@ export default function Login(){
                 <label htmlFor="name" className="form-label fs-2">User Email address:</label>
                 <input type="text" className="form-control fs-2" id="name" placeholder="Enter user email address" name="email" 
                     value={formData.email} onChange={(e)=>setFormData({...formData, email: e.target.value})}/>
+                {err.email && <div className="alert alert-danger mt-2">{err.email}</div>}
             </div>
 
             <div className="form-group">
                 <label htmlFor="password" className="form-label fs-2">Password:</label>
                 <input type="password" className="form-control fs-2" id="password" placeholder="Enter your password" name="password"
                     value={formData.password} onChange={(e)=>setFormData({...formData, password: e.target.value})}/>
+                {err.password && <div className="alert alert-danger mt-2">{err.password}</div>}
             </div>
             
             <div className="mt-2 mb-5">

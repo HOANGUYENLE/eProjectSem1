@@ -91,8 +91,23 @@ export default function Nav(){
                             <li className="fw-bolder fs-2 text-center">{user.name}</li>
                             <li><hr className="dropdown-divider"></hr></li>
                             <li><button className="dropdown-item" type="button" onClick={()=>navigate("/userInfo")}>Profile</button></li>
+                            {user.role === "customer" && (
+                                <li><button className="dropdown-item" type="button" onClick={() => navigate("/lawyer/register")}>
+                                    Join as lawyer
+                                    </button>
+                                </li>)}
                             <li><button className="dropdown-item" type="button" onClick={()=>navigate("/myAppointment")}>My Appointment</button></li>
-                            
+                            {user.role === "lawyer" && (
+                            <li>
+                                <button
+                                className="dropdown-item"
+                                type="button"
+                                onClick={() => navigate("/lawyer/dashboard")}
+                                >
+                                My Lawyer Profile
+                                </button>
+                            </li>
+                            )}
                             <li><hr className="dropdown-divider"></hr></li>
                             <li><button className="dropdown-item btn-danger" type="button" onClick={(e)=>handleLogout(e)}>Logout</button></li>
                         </ul>

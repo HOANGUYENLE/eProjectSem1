@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Models\City;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\ReviewController;
@@ -13,6 +14,8 @@ use App\Http\Controllers\AvailableSlotController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\SpecialzationController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\LawyerModuleController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -34,7 +37,6 @@ Route::get('/faq', [FaqController::class, 'index']);
 Route::get('/faq/page', [FaqController::class, 'indexPage']);
 Route::get('/faq/{post}', [FaqController::class, 'show']);
 Route::get('/lawyer/{lawyerID}/reviews', [ReviewController::class, 'show']);
-
 Route::get('/lawyerProfile/{lawyer}', [LawyerFilesController::class, 'DetailLawyerInfo']);
 Route::get("/seeLawyer/{lawyer}", [LawyerFilesController::class, 'show']);
 
@@ -56,6 +58,7 @@ Route::middleware(['auth:sanctum', 'roles:1,2,3'])->group(function(){
 });
 Route::middleware(['auth:sanctum', 'roles:1,3'])->group(function(){
     Route::put('/faq/{id}', [FaqController::class, 'update']);
+    Route::post('/booking/response/{appointment}', [AppointmentController::class, "ResponsedAppointment"]);
 });
 
 Route::middleware(['auth:sanctum', 'roles:2,3'])->group(function(){
@@ -96,3 +99,20 @@ Route::middleware(['auth:sanctum', 'roles:3'])->group(function(){
 Route::post('/login', [AuthController::class , 'login']);
 Route::post('/register', [AuthController::class , 'register']);
 Route::post('/logout', [AuthController::class , 'logout'])->middleware('auth:sanctum');
+
+
+Route::get('/allCities', [CityController::class, 'index']);
+
+Route::middleware(['auth:sanctum', 'roles:3'])->prefix('lawyer')->group(function () {
+    Route::get('/dashboard', [LawyerModuleController::class, 'dashboard']);
+    Route::get('/profile', [LawyerModuleController::class, 'profile']);
+    Route::post('/profile', [LawyerModuleController::class, 'updateProfile']);
+
+    Route::get('/specializations', [LawyerModuleController::class, 'specializations']);
+    Route::post('/specializations', [LawyerModuleController::class, 'syncSpecializations']);
+
+    Route::get('/slots', [LawyerModuleController::class, 'slots']);
+    Route::post('/slots', [LawyerModuleController::class, 'storeSlot']);
+    Route::put('/slots/{id}', [LawyerModuleController::class, 'updateSlot']);
+    Route::delete('/slots/{id}', [LawyerModuleController::class, 'deleteSlot']);
+});

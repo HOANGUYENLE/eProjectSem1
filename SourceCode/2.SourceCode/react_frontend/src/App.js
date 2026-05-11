@@ -26,6 +26,15 @@ import AppointmentStatus from './appointment/AppointmentStatus';
 import Reschedule from './appointment/Reschedule';
 import AppointmentPage from './appointment/AppointmentPage';
 
+import LawyerLayout from './layout/LawyerLayout';
+import LawyerLoginPage from './pages/lawyer/LawyerLoginPage';
+import LawyerDashboardPage from './pages/lawyer/LawyerDashboardPage';
+import LawyerProfilePage from './pages/lawyer/LawyerProfilePage';
+import LawyerSpecializationsPage from './pages/lawyer/LawyerSpecializationsPage';
+import LawyerSlotsPage from './pages/lawyer/LawyerSlotsPage';
+import LawyerRegisterPage from './pages/lawyer/LawyerRegisterPage';
+import LawyerAppointment from './pages/lawyer/LawyerAppointmentPage';
+
 const myClient = new QueryClient();
 
 function App() {
@@ -46,6 +55,18 @@ function App() {
             <Route path="myAppointment" element={<AppointmentStatus/>}/>
             <Route path="reschedule/:appointmentID" element={<Reschedule/>}/>
             <Route path="registerAppointment/:lawyerID" element={<AppointmentPage/>}/>
+            
+            <Route path="lawyer/register" element={<LawyerRegisterPage />} />
+          </Route>
+
+          <Route path="/lawyer/login" element={<LawyerLoginPage />} />
+          
+          <Route path="/lawyer" element={<LawyerLayout />}>
+            <Route path="dashboard" element={<LawyerDashboardPage />} />
+            <Route path="profile" element={<LawyerProfilePage />} />
+            <Route path="specializations" element={<LawyerSpecializationsPage />} />
+            <Route path="slots" element={<LawyerSlotsPage />} />
+            <Route path="appointment" element={<LawyerAppointment/>}/>
           </Route>
 
           <Route path="/admin" element={<AdminProtection><LayoutAdmin/></AdminProtection>}>
