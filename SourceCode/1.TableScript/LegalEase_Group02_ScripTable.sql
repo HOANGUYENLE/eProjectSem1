@@ -154,8 +154,8 @@ CREATE TABLE appointments (
     created_at DATETIME(3) DEFAULT NOW(3),
     updated_at DATETIME(3) DEFAULT NOW(3),
     CONSTRAINT fk_customer_appointment FOREIGN KEY (customer_id) REFERENCES usersTb(id) ON DELETE CASCADE,
-    CONSTRAINT fk_lawyer_appointment FOREIGN KEY (lawyer_id) REFERENCES lawyersFiles(lawyer_id),
-    CONSTRAINT fk_slot FOREIGN KEY (slot_id) REFERENCES availability_slots(id)
+    CONSTRAINT fk_lawyer_appointment FOREIGN KEY (lawyer_id) REFERENCES lawyersFiles(lawyer_id) ON DELETE CASCADE,
+    CONSTRAINT fk_slot FOREIGN KEY (slot_id) REFERENCES availability_slots(id) ON DELETE CASCADE,
 )ENGINE=InnoDB;
 
 CREATE TABLE rescheduled (

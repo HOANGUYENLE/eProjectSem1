@@ -29,7 +29,7 @@ export default function Reminder() {
 
   useEffect(()=>{
     if(ReminderData.data){
-      console.log(ReminderData.data);
+      //console.log(ReminderData.data);
     }
   }, [ReminderData]);
   const HandleConfirmReminder = async (id) =>{

@@ -36,7 +36,7 @@ export default function SystemNotification(){
         queries:[
           { queryKey: ["SysNotification"],
             queryFn: fetchSystemNotification,
-            refetchInterval: 1000 * 60,
+            refetchInterval: 1000 * 30,
           }
         ]
   });

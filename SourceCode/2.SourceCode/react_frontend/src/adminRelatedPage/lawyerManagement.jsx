@@ -373,7 +373,7 @@ export default function AdminLawyerManagement(){
                                         </div>
                                         
                                         <div className="row mb-3">
-                                            <div className="col-md-6">
+                                            <div className="col-md-4">
                                                 <label className="fw-bolder form-label">Status</label>
                                                 <select className="form-select form-control" value={!Status?value.status:Status.status} onChange={(e)=>handleStatus(e.target.value)}>
                                                     <option value="pending">Pending</option>
@@ -381,7 +381,7 @@ export default function AdminLawyerManagement(){
                                                     <option value="approve">Approve</option>
                                                 </select>
                                             </div>
-                                            <div className="col-md-6">
+                                            <div className="col-md-8">
                                                 <label className="fw-bolder form-label">Years of Experience</label>
                                                 <input type="number" className="form-control" value={value.years} readOnly />
                                             </div>

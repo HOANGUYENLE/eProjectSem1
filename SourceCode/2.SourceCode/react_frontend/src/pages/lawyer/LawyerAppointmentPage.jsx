@@ -49,7 +49,7 @@ export default function LawyerAppointment(){
   
         const res = fetchRegisterReschedule("cancel", temp);
         if(res){
-          alert("You have canceled this schedule: " + calDayAhead(appt.day_of_week, appt.updated_at) + " with Customer " + appt.user_tb.name);
+          alert("You have canceled this schedule: " + calDayAhead(appt.slot.day_of_week, appt.updated_at) + " with Customer " + appt.user_tb.name);
           setTimeout(() => {
             navigate("/"); // replace with your route
           }, 2000);
@@ -62,7 +62,7 @@ export default function LawyerAppointment(){
   
         const res = fetchDoneAppointment(appt.id);
         if(res){
-          alert("You have complete this schedule: " + calDayAhead(appt.day_of_week, appt.updated_at) + " with Customer " + appt.user_tb.name);
+          alert("You have complete this schedule: " + calDayAhead(appt.slot.day_of_week, appt.updated_at) + " with Customer " + appt.user_tb.name);
           setTimeout(() => {
             navigate("/"); // replace with your route
           }, 2000);
