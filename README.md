@@ -1,11 +1,11 @@
-LegalEase_group02_MidtermSubmit
+LegalEase_group02_FinalSubmit
 =======================================
 
 =======================================
 + Supervisor : LÊ THANH NHÂN
 + Semester : I
 + Batch No : T3.2511.M0
-+ Group No: : 02
++ Group No:  02
 + List Of Member:
 1. Nguyễn Lê Nhật Hòa (Student1704189).
 2. Trần Quốc Anh (Student1704190).
@@ -14,6 +14,6 @@ LegalEase_group02_MidtermSubmit
 
 =======================================
 
-Documentations: https://github.com/HOANGUYENLE/eProjectSem01/tree/main/Documentations
+Documentations:  https://github.com/HOANGUYENLE/eProjectSem1/tree/main/Documents
 
 =======================================
