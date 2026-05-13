@@ -14,6 +14,6 @@ LegalEase_group02_FinalSubmit
 
 =======================================
 
-Documentations:  https://github.com/HOANGUYENLE/eProjectSem1/tree/main/Documents
+Documentations:  https://github.com/HOANGUYENLE/eProjectSem1/tree/main/Documentations
 
 =======================================
